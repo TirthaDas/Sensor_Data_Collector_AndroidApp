@@ -2,6 +2,7 @@ package com.das.tirtha.sensordatacollector;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.util.Log;
 import com.android.volley.Request;
@@ -20,6 +21,8 @@ public class ProjectList extends AppCompatActivity {
     private TextView ProjectList;
     private RequestQueue mQueue;
     private static final  String TAG="TirthaTest";
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +31,23 @@ public class ProjectList extends AppCompatActivity {
         ProjectList=findViewById(R.id.projectList);
         mQueue= Volley.newRequestQueue(this);
         Log.d(TAG, "onResponse: hello");
+        toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("project lists");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         getProjectsList();
 
     }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
     private void getProjectsList() {
 //        String url= "https://jsonplaceholder.typicode.com/todos";
-        String url= "http://192.168.0.10:3000/api/posts";
+        String url= "http://192.168.0.22:3000/api/posts";
 
         JsonObjectRequest request= new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

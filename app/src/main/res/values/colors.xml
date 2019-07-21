@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="moonstone">#3aa8c1</color>
+    <color name="grayScale">#7e7e7e</color>
+    <color name="darkBlue">#2e869a</color>
+    <color name="darkPink">#e75480</color>
+    <color name="delicateBlue">#6ab2ca</color>
+    <color name="redPlum">#db5a6b</color>
+    <color name="lightBlue">#c1e1ec</color>
+    <color name="lExtremeLightBlue">#e8f4f8</color>
+
 </resources>

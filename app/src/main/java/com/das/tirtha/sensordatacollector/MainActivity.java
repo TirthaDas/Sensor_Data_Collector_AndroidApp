@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Main activity");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Button_GoToProjects= findViewById(R.id.GoTOProjects);
         Button_GoToProjects.setOnClickListener(new View.OnClickListener() {
             @Override

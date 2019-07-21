@@ -5,15 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true"
-        android:textSize="25dp"
-        android:text="Project list" />
+        android:layout_marginTop="6dp"
+        android:text="Project list"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/projectList"

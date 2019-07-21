@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lExtremeLightBlue"
+        tools:context=".signUp"
+        android:orientation="vertical"
+        android:padding="30dp"
+
+        android:gravity="center">
+
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="12dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="22sp"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="12dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="22sp"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+
+
+
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textSize="22sp"
+            android:text="Sign In"
+            android:layout_marginTop="66dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/mybutton"
+            />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Don't have an account, Create One !!"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:onClick="goToSignUp"
+            android:id="@+id/goToSignUp"/>
+    </LinearLayout>
+</RelativeLayout>
