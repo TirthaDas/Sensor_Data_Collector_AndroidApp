@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,10 +20,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProjectList extends AppCompatActivity {
-    private TextView ProjectList;
+    private TextView ProjectList,mTitle;
     private RequestQueue mQueue;
     private static final  String TAG="TirthaTest";
     private Toolbar toolbar;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +35,31 @@ public class ProjectList extends AppCompatActivity {
         mQueue= Volley.newRequestQueue(this);
         Log.d(TAG, "onResponse: hello");
         toolbar=findViewById(R.id.toolbar);
+        mTitle =  toolbar.findViewById(R.id.toolbar_title);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("project lists");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mTitle.setText(toolbar.getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                username= null;
+                Toast.makeText(ProjectList.this,"no username found",Toast.LENGTH_SHORT).show();
+
+            } else {
+                username= extras.getString("UserName");
+                Toast.makeText(ProjectList.this,"welcome here"+username,Toast.LENGTH_SHORT).show();
+
+            }
+        } else {
+            username= (String) savedInstanceState.getSerializable("UserName");
+            Toast.makeText(ProjectList.this,"welcome here"+username,Toast.LENGTH_SHORT).show();
+
+        }
         getProjectsList();
 
     }

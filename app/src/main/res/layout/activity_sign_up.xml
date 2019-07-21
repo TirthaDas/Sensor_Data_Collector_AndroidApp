@@ -29,12 +29,13 @@
         >
 
         <EditText
+            android:id="@+id/FullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="Full Name"
-            android:ems="10"
             android:inputType="text"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -45,12 +46,13 @@
         >
 
         <EditText
+            android:id="@+id/Username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="Username"
-            android:ems="10"
             android:inputType="text"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -61,12 +63,13 @@
         >
 
         <EditText
+            android:id="@+id/Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="Email"
-            android:ems="10"
             android:inputType="text"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -78,12 +81,13 @@
         >
 
         <EditText
+            android:id="@+id/Password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="Password"
-            android:ems="10"
             android:inputType="text"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -95,57 +99,64 @@
         >
 
         <EditText
+            android:id="@+id/ConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Confirm Password"
             android:ems="10"
+            android:hint="Confirm Password"
             android:inputType="text"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
-
 
 
     <RadioGroup
+        android:id="@+id/Radio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
         android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gender"
-                android:textSize="22sp"
-                android:padding="4dp"
-                />
-        <RadioButton
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:padding="4dp"
+            android:text="Gender"
+            android:textSize="22sp" />
+
+        <RadioButton
+            android:id="@+id/RadioMale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:padding="4dp"
             android:text="Male"
-            android:layout_marginLeft="16dp"
-            android:padding="4dp"
-            />
+            android:textSize="22sp" />
+
         <RadioButton
+            android:id="@+id/RadioFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="Female"
             android:layout_marginLeft="16dp"
             android:padding="4dp"
-            />
+            android:text="Female"
+            android:textSize="22sp" />
 
     </RadioGroup>
-
+<ProgressBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:visibility="gone"
+    android:id="@+id/progressBar"/>
     <Button
+        android:id="@+id/Register"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textSize="22sp"
-        android:text="Register"
         android:layout_marginTop="66dp"
-        android:textColor="#ffffff"
         android:background="@drawable/mybutton"
-        />
+        android:text="Register"
+        android:textColor="#ffffff"
+        android:textSize="22sp" />
 
 
 </LinearLayout>
