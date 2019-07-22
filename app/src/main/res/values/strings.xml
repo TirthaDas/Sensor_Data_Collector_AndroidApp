@@ -3,7 +3,7 @@
     <string name="fullname_err">Enter your name</string>
     <string name="email_err">Enter correct email</string>
     <string name="username_err">Enter Username</string>
-    <string name="password_err">Enter Password</string>
+    <string name="password_err">Must have at least one lowercase letter, one uppercase letter, one digit, one special character </string>
     <string name="confirmpassword_err">Password do not match</string>
     <string name="gender_err">Select gender</string>
 
