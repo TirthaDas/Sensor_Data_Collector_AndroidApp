@@ -20,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +38,8 @@ public class signUp extends AppCompatActivity {
     private Button register;
     private ProgressBar progressBar;
     private static String url_register = "http://192.168.0.22:3000/api/addUser";
+    private AwesomeValidation awesomeValidation;
+    final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
 
 
 
@@ -58,6 +62,7 @@ public class signUp extends AppCompatActivity {
         register=findViewById(R.id.Register);
         progressBar=findViewById(R.id.progressBar);
 
+        awesomeValidation=new AwesomeValidation(ValidationStyle.BASIC);
 
 
         /*
@@ -78,14 +83,26 @@ public class signUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int selectedId = radioGroup.getCheckedRadioButtonId();
+                if(selectedId != -1) {
+                    //do something
+                    radioButton =  findViewById(selectedId);
+
+                    Toast.makeText(signUp.this,
+                            radioButton.getText(), Toast.LENGTH_LONG).show();
+                    final String gender=radioButton.getText().toString();
+                    addNewUSer(gender);
+
+
+                } else {
+                    //do something else
+//                    Toast.makeText(signUp.this,"Please select a gender",Toast.LENGTH_SHORT).show();
+                    addNewUSer("NS");
+
+
+                }
 
                 // find the radiobutton by returned id
-                radioButton =  findViewById(selectedId);
 
-//                Toast.makeText(signUp.this,
-//                        radioButton.getText(), Toast.LENGTH_SHORT).show();
-                final String gender=radioButton.getText().toString();
-                addNewUSer(gender);
 
         }
         });
@@ -108,63 +125,85 @@ public class signUp extends AppCompatActivity {
         final String password= this.password.getText().toString().trim();
         final String confirmPassword= this.confirmpasswprd.getText().toString().trim();
 
-        // setting the volley request and listener
 
-        StringRequest request= new StringRequest(Request.Method.POST, url_register,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject responseObject=new JSONObject(response);
-                            String message=responseObject.getString("message");
-                            if(message.equals("1")){
-                                String UserID=responseObject.getString("UserID");
-                                Toast.makeText(signUp.this,"successfully added user"+UserID,Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(signUp.this,ProjectList.class);
-                                intent.putExtra("UserName",username);
-                                startActivity(intent);
-                            }
-                            else {
-                                Toast.makeText(signUp.this,"sign up error",Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                                register.setVisibility(View.VISIBLE);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(signUp.this,"sign up error"+e.toString(),Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                            register.setVisibility(View.VISIBLE);
+        // form validation
+        awesomeValidation.addValidation(signUp.this, R.id.FullName, "[a-zA-Z\\s]+", R.string.fullname_err);
+        awesomeValidation.addValidation(signUp.this, R.id.Username, "[a-zA-Z\\s]+", R.string.username_err);
+        awesomeValidation.addValidation(signUp.this, R.id.Email, android.util.Patterns.EMAIL_ADDRESS, R.string.email_err);
+        awesomeValidation.addValidation(signUp.this, R.id.Password, regexPassword, R.string.password_err);
+        awesomeValidation.addValidation(signUp.this, R.id.ConfirmPassword,R.id.Password, R.string.confirmpassword_err);
 
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(signUp.this,"sign up error"+error.toString(),Toast.LENGTH_SHORT).show();
+        if(awesomeValidation.validate()){
+            if(gender.equals("NS")){
+                Toast.makeText(signUp.this,"Please select a gender",Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 register.setVisibility(View.VISIBLE);
 
             }
-        })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params=new HashMap<>();
-                params.put("Fullname",fullname);
-                params.put("Username",username);
-                params.put("Email",email);
-                params.put("Password",password);
-                params.put("Gender",gender);
 
-                return params;
+            else {
+                // setting the volley request and listener
+
+                StringRequest request= new StringRequest(Request.Method.POST, url_register,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject responseObject=new JSONObject(response);
+                                    String message=responseObject.getString("message");
+                                    if(message.equals("1")){
+                                        String UserID=responseObject.getString("UserID");
+                                        Toast.makeText(signUp.this,"successfully added user"+UserID,Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(signUp.this,ProjectList.class);
+                                        intent.putExtra("UserName",username);
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        Toast.makeText(signUp.this,"sign up error",Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                        register.setVisibility(View.VISIBLE);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(signUp.this,"sign up error"+e.toString(),Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
+                                    register.setVisibility(View.VISIBLE);
+
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(signUp.this,"sign up error"+error.toString(),Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        register.setVisibility(View.VISIBLE);
+
+                    }
+                })
+                {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String,String> params=new HashMap<>();
+                        params.put("Fullname",fullname);
+                        params.put("Username",username);
+                        params.put("Email",email);
+                        params.put("Password",password);
+                        params.put("Gender",gender);
+
+                        return params;
+                    }
+                };
+
+
+                RequestQueue requestQueue = Volley.newRequestQueue(this);
+                requestQueue.add(request);
+
             }
-        };
-
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(request);
-
-
+            }
+        else {
+            progressBar.setVisibility(View.GONE);
+            register.setVisibility(View.VISIBLE);
+        }
 
     }
 

@@ -78,6 +78,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_marginTop="12dp"
+        app:passwordToggleEnabled="true"
         >
 
         <EditText
@@ -86,7 +87,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Password"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
 
@@ -96,6 +97,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_marginTop="12dp"
+        app:passwordToggleEnabled="true"
         >
 
         <EditText
@@ -104,7 +106,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Confirm Password"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:textSize="22sp" />
     </android.support.design.widget.TextInputLayout>
 
