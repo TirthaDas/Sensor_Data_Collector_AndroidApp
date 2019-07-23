@@ -54,7 +54,8 @@
                 android:hint="Email"
                 android:ems="10"
                 android:inputType="text"
-                android:textSize="22sp"/>
+                android:textSize="22sp"
+                android:id="@+id/loginEmail"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -74,10 +75,16 @@
                 android:hint="Password"
                 android:ems="10"
                 android:textSize="22sp"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:id="@+id/loginPassword"/>
         </android.support.design.widget.TextInputLayout>
 
-
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:id="@+id/loginProgressBar"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -86,6 +93,7 @@
             android:layout_marginTop="66dp"
             android:textColor="#ffffff"
             android:background="@drawable/mybutton"
+            android:id="@+id/login"
             />
 
 

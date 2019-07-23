@@ -86,12 +86,11 @@ public class signUp extends AppCompatActivity {
                 if(selectedId != -1) {
                     //do something
                     radioButton =  findViewById(selectedId);
-
-                    Toast.makeText(signUp.this,
-                            radioButton.getText(), Toast.LENGTH_LONG).show();
                     final String gender=radioButton.getText().toString();
                     addNewUSer(gender);
 
+//                    Toast.makeText(signUp.this,
+//                            radioButton.getText(), Toast.LENGTH_LONG).show();
 
                 } else {
                     //do something else
