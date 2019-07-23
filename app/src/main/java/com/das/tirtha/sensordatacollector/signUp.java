@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -37,6 +38,7 @@ public class signUp extends AppCompatActivity {
     private RadioButton radioButton;
     private Button register;
     private ProgressBar progressBar;
+    private int mStatusCode;
     private static String url_register = "http://192.168.0.22:3000/api/addUser";
     private AwesomeValidation awesomeValidation;
     final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
@@ -150,15 +152,18 @@ public class signUp extends AppCompatActivity {
                                 try {
                                     JSONObject responseObject=new JSONObject(response);
                                     String message=responseObject.getString("message");
-                                    if(message.equals("1")){
+                                    if(mStatusCode==200){
                                         String UserID=responseObject.getString("UserID");
-                                        Toast.makeText(signUp.this,"successfully added user"+UserID,Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(signUp.this,ProjectList.class);
-                                        intent.putExtra("UserName",username);
-                                        startActivity(intent);
+                                        Toast.makeText(signUp.this,message,Toast.LENGTH_SHORT).show();
+                                        gotToMainActivity(username);
                                     }
-                                    else {
-                                        Toast.makeText(signUp.this,"sign up error",Toast.LENGTH_SHORT).show();
+                                    else if(mStatusCode==201){
+                                        Toast.makeText(signUp.this,message,Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                        register.setVisibility(View.VISIBLE);
+                                    }
+                                    else if(mStatusCode==400){
+                                        Toast.makeText(signUp.this,message,Toast.LENGTH_SHORT).show();
                                         progressBar.setVisibility(View.GONE);
                                         register.setVisibility(View.VISIBLE);
                                     }
@@ -191,6 +196,11 @@ public class signUp extends AppCompatActivity {
 
                         return params;
                     }
+                    @Override
+                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                        mStatusCode = response.statusCode;
+                        return super.parseNetworkResponse(response);
+                    }
                 };
 
 
@@ -204,6 +214,12 @@ public class signUp extends AppCompatActivity {
             register.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    public void gotToMainActivity( final  String UserName){
+        Intent intent = new Intent(signUp.this,MainActivity.class);
+        intent.putExtra("UserName",UserName);
+        startActivity(intent);
     }
 
 }
