@@ -132,7 +132,7 @@ public class login extends AppCompatActivity {
                                 if(mStatusCode==200){
                                     String UserID=responseObject.getString("UserID");
                                     String UserName=responseObject.getString("UserName");
-                                    Toast.makeText(login.this,"successfully added user"+UserID,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(login.this,message,Toast.LENGTH_SHORT).show();
                                     sp.edit().putBoolean("logged",true).apply();
                                     sp.edit().putString("UserName",UserName).apply();
                                     gotToMainActivity(UserName);
