@@ -16,15 +16,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Button Button_GoToProjects,logout;
     private TextView nav_header_user;
     private  Toolbar toolbar;
     private SharedPreferences sp;
     private DrawerLayout drawer;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +36,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // get the shared preference instance
         sp = getSharedPreferences("login",MODE_PRIVATE);
 
-
-
         // set up toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Projects");
 
+        // set up drawer navigation
         navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle= new ActionBarDrawerToggle(this,drawer,toolbar,
-                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle= new ActionBarDrawerToggle(this,drawer,toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
 
         // showing this fragment in the start
         if(savedInstanceState==null) {
@@ -58,19 +52,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_menu_project_list);
         }
 
-
-
         // get all extras passed to main activity
         String User=getAllExtras(savedInstanceState);
-
 
         // set username in nav header
         View nav_view=navigationView.getHeaderView(0);
         nav_header_user= nav_view.findViewById(R.id.nav_header_user);
         nav_header_user.setText(User);
-
-
-
     }
     @Override
     public void onBackPressed() {
@@ -78,29 +66,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }else {
 //            super.onBackPressed();
-
         }
     }
-
    private String getAllExtras(Bundle savedInstanceState){
         String username;
        if (savedInstanceState == null) {
            Bundle extras = getIntent().getExtras();
            if(extras == null) {
                username= "";
-
            } else {
                username= extras.getString("UserName");
-
            }
        } else {
            username= (String) savedInstanceState.getSerializable("UserName");
-
        }
        return username;
    }
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -113,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_menu_sign_out:
                 signOut();
                 break;
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

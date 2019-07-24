@@ -12,6 +12,7 @@ public class active_projects extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Active Projects");
         return inflater.inflate(R.layout.fragment_active_projects,container,false);
     }
 }
