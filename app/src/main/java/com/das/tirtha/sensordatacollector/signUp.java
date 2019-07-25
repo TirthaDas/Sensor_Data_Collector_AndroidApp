@@ -39,7 +39,7 @@ public class signUp extends AppCompatActivity {
     private Button register;
     private ProgressBar progressBar;
     private int mStatusCode;
-    private static String url_register = "http://192.168.0.22:3000/api/addUser";
+
     private AwesomeValidation awesomeValidation;
     final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
 
@@ -115,6 +115,9 @@ public class signUp extends AppCompatActivity {
     }
 
     private void addNewUSer(final String gender){
+
+        String ip = getResources().getString(R.string.IP);
+        String url_register = ip+"api/addUser";
         // hiding the button and showing the progress bar
         progressBar.setVisibility(View.VISIBLE);
         register.setVisibility(View.GONE);

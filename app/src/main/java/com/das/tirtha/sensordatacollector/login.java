@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,9 +37,10 @@ public class login extends AppCompatActivity {
     private ProgressBar loginProgressBar;
     private Button login;
     private SharedPreferences sp;
-    private static String url_register = "http://192.168.0.22:3000/api/loginUser";
     private AwesomeValidation awesomeValidation;
     private int mStatusCode;
+
+
     final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
 
 
@@ -46,6 +48,7 @@ public class login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         sp = getSharedPreferences("login",MODE_PRIVATE);
 
@@ -101,7 +104,8 @@ public class login extends AppCompatActivity {
 
 
     private  void signIn(){
-
+        String  ip = getResources().getString(R.string.IP);
+        String url_login = ip+"api/loginUser";
         // show progress bar and hide login button
         loginProgressBar.setVisibility(View.VISIBLE);
         login.setVisibility(View.GONE);
@@ -121,7 +125,7 @@ public class login extends AppCompatActivity {
 
             // setting the volley request and listener
 
-            StringRequest request= new StringRequest(Request.Method.POST, url_register,
+            StringRequest request= new StringRequest(Request.Method.POST, url_login,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

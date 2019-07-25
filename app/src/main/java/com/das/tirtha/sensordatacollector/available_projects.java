@@ -34,6 +34,8 @@ public class available_projects extends Fragment {
     private Toolbar toolbar;
     private static final  String TAG="Project Request Test";
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,8 +53,8 @@ public class available_projects extends Fragment {
     }
 
     private void getProjectsList() {
-//        String url= "https://jsonplaceholder.typicode.com/todos";
-        String url= "http://192.168.0.22:3000/api/posts";
+        String ip = getResources().getString(R.string.IP);
+        String url=ip+"api/posts";
 
         JsonObjectRequest request= new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

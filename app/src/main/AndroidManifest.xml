@@ -12,10 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".signUp"></activity>
+        <activity android:name=".projectDetails"></activity>
+        <activity android:name=".signUp" />
         <activity android:name=".ProjectList" />
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar1"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar1" />
         <activity android:name=".login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
