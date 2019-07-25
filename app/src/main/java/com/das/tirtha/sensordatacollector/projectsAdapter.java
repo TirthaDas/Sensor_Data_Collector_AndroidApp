@@ -33,8 +33,8 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
 
-        projectsViewHolder.projectTitle.setText("Title\n"+Projecttitle);
-        projectsViewHolder.projectDescriptoion.setText("Description\n"+ProjectDescription);
+        projectsViewHolder.projectTitle.setText(Projecttitle);
+        projectsViewHolder.projectDescriptoion.setText(ProjectDescription);
 
     }
 
