@@ -45,8 +45,10 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
             {
                 Toast.makeText(context, "Item "  +i+ " is clicked.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context,projectDetails.class);
-//                intent.putExtra("UserName",UserName);
-               context.startActivity(intent);
+                intent.putExtra("Project_title",mprojectList.get(i).getProjectTitle());
+                intent.putExtra("Project_Description",mprojectList.get(i).getDescription());
+
+                context.startActivity(intent);
 
             }
         });

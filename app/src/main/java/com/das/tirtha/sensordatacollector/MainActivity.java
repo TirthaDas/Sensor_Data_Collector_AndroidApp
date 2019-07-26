@@ -132,15 +132,4 @@ toolbar=findViewById(R.id.toolbar);
         });
 
 
-
-two functions outside onCreate:
-
- private void goToProjects() {
-        Intent intent = new Intent(this,ProjectList.class);
-        startActivity(intent);
-    }
-
-
-
-
 */
