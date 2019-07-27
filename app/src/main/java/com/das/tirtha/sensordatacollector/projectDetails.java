@@ -1,9 +1,15 @@
 package com.das.tirtha.sensordatacollector;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class projectDetails extends AppCompatActivity {
 private String[] data= new String[2];
@@ -16,7 +22,10 @@ private TextView project_detail_title,project_detail_description;
         project_detail_description=findViewById(R.id.project_detail_description);
         project_detail_title=findViewById(R.id.project_detail_title);
         project_detail_title.setText(data[0]);
-        project_detail_description.setText(data[1]);
+//        project_detail_description.setText(data[1]);
+
+        List<Sensor> sense=getAllAvailableSenson();
+        project_detail_description.setText(sense.get(0).toString());
 
 //        Toast.makeText(projectDetails.this,"hello  there "+data[0]+data[1],Toast.LENGTH_SHORT).show();
 
@@ -53,5 +62,17 @@ private TextView project_detail_title,project_detail_description;
 
         }
         return data;
+    }
+
+    public List<Sensor> getAllAvailableSenson(){
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        List<Sensor> sensors=sensorManager.getSensorList(Sensor.TYPE_ALL);
+        ;
+        for (int x=0; x<sensors.size();x++){
+                    Toast.makeText(projectDetails.this,"hello  there "+sensors.get(x),Toast.LENGTH_LONG).show();
+
+        }
+        return sensors;
+
     }
 }

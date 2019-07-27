@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="8dp"
             android:padding="8dp"
             app:cardCornerRadius="2dp"
@@ -34,36 +34,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#E0F7FA"
+                    android:gravity="center"
                     android:minHeight="100dp"
                     android:orientation="vertical"
 
 
                     >
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:text="Project Title"
-                        android:textColor="#000000"
-                        android:textSize="25sp"
-                        android:textStyle="normal"
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:text="Project Title"-->
+                    <!--android:textColor="#000000"-->
+                    <!--android:textSize="25sp"-->
+                    <!--android:textStyle="normal"-->
 
-                        />
+                    <!--/>-->
 
 
                     <TextView
                         android:id="@+id/project_detail_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="3dp"
+                        android:layout_gravity="center"
+
+
+                        android:layout_marginTop="0dp"
                         android:layout_marginBottom="1dp"
                         android:gravity="center"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:textSize="22dp" />
+                        android:textColor="#000000"
+                        android:textSize="24sp" />
 
                 </LinearLayout>
 
@@ -90,11 +94,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:textAlignment="viewStart"
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
-                        android:paddingBottom="10dp"
                         android:paddingRight="10dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="viewStart"
 
                         android:textSize="22dp" />
                 </LinearLayout>
@@ -105,10 +109,63 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/card_sensor_select"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="8dp"
+            android:padding="8dp"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#E0F7FA"
+                android:gravity="center"
+                android:minHeight="100dp"
+                android:orientation="vertical"
+
+
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:text="please select at least one sensor from the list below"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="#000000"
+                    android:textSize="24sp" />
+            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <CheckBox
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:text="select me"
+                        android:textSize="20sp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:id="@+id/selct_me"/>
+                </LinearLayout>
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
 
     </LinearLayout>
 </ScrollView>
