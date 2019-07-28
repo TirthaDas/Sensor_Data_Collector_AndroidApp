@@ -1,23 +1,25 @@
 package com.das.tirtha.sensordatacollector;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.SensorViewHolder> {
     private Context context;
     private ArrayList<Sensors> mSensorList;
+
     public  SensorsListAdapter(Context context,ArrayList<Sensors> mSensorList){
         this.context=context;
         this.mSensorList=mSensorList;
@@ -70,12 +72,6 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
                 public void onClick(View view) {
                     mSensor.setChecked(!mSensor.isChecked());
                     Log.d("checking on click ", "onClick: "+mSensor.getName()+mSensor.isChecked());
-                    if(mSensor.isChecked()){
-
-
-                    }else {
-
-                    }
                     sensorSelected.setVisibility(mSensor.isChecked() ? View.VISIBLE : View.GONE);
                 }
             });
@@ -94,4 +90,6 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
         }
         return selected;
     }
+
+
 }

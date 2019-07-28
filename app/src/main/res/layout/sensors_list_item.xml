@@ -19,10 +19,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#E0F7FA"
+            android:background="#EEEEEE"
             android:gravity="center_vertical"
             android:minHeight="100dp"
             android:orientation="horizontal"
+            android:weightSum="4"
             >
 
 
@@ -30,25 +31,29 @@
 
                 <TextView
                     android:id="@+id/sensor_item_name"
-                    android:layout_width="300dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="1dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="please select at least one sensor from the list below"
                     android:textColor="#000000"
+
                     android:textSize="22sp"
+                    android:layout_weight="3"
+
 
                     />
 
                 <ImageView
                     android:id="@+id/sensor_item_selected"
-                    android:layout_width="40dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_tick_selected"
                     android:visibility="gone"
+                    android:layout_weight="1"
+
 
 
                     />

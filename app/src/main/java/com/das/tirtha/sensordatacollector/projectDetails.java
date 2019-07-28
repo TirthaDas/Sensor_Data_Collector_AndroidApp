@@ -9,6 +9,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +20,13 @@ import java.util.List;
 
 public class projectDetails extends AppCompatActivity {
     private String[] data = new String[2];
-    private TextView project_detail_title, project_detail_description,mTitle;
+    private TextView project_detail_title,mTitle;
     private ArrayList<Sensors> SensorList=new ArrayList<>();
     private SensorsListAdapter sensorsListAdapter;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
-
+    private ActionMode actionMode;
+    private Button startProject;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,23 +34,23 @@ public class projectDetails extends AppCompatActivity {
         data = getExtasFromIntent(savedInstanceState);
 
         // bind the components
-        project_detail_description = findViewById(R.id.project_detail_description);
 //        project_detail_title = findViewById(R.id.project_detail_title);
         recyclerView= findViewById(R.id.sensor_list_recycler_view);
-//        toolbar=findViewById(R.id.project_detail_toolbar);
-//        mTitle =  toolbar.findViewById(R.id.toolbar_title);
+        toolbar=findViewById(R.id.project_detail_toolbar);
+        mTitle =  toolbar.findViewById(R.id.toolbar_title);
+        startProject=findViewById(R.id.start_project);
 
 
         //set up toolbar
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle("Project Details");
-//        mTitle.setText(toolbar.getTitle());
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Sensors  List");
+        mTitle.setText(toolbar.getTitle());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 //        project_detail_title.setText(data[0]);
-        project_detail_description.setText(data[1]);
+//        project_detail_description.setText(data[1]);
 
 //        project_detail_description.setText(sense.get(0).toString());
 
@@ -58,6 +62,22 @@ public class projectDetails extends AppCompatActivity {
         sensorsListAdapter = new SensorsListAdapter(this,SensorList);
         recyclerView.setAdapter(sensorsListAdapter);
         getAllAvailableSensor();
+
+        startProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sensorsListAdapter.getSelected().size() > 0) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
+                        stringBuilder.append(sensorsListAdapter.getSelected().get(i).getName());
+                        stringBuilder.append("\n");
+                    }
+                    showToast(stringBuilder.toString());
+                } else {
+                    showToast("No Selection");
+                }
+            }
+        });
 
 
 
@@ -110,5 +130,14 @@ public class projectDetails extends AppCompatActivity {
         sensorsListAdapter.setmSensorList(SensorList);
 
 
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 }
