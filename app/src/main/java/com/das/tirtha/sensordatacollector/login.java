@@ -1,7 +1,12 @@
 package com.das.tirtha.sensordatacollector;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +47,12 @@ public class login extends AppCompatActivity {
 
 
     final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
+    public static final int MULTIPLE_PERMISSIONS = 10;
+    String[] permissions= new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.BODY_SENSORS,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
 
 
     @Override
@@ -77,8 +88,11 @@ public class login extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-
-
+        int Permission_All=1;
+        String[] Permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.BODY_SENSORS};
+        if(!hasPermissions(this,permissions)){
+            ActivityCompat.requestPermissions(this,permissions,Permission_All);
+        }
         // set up click listeners
 
         createNewAccount.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +109,9 @@ public class login extends AppCompatActivity {
                 signIn();
             }
         });
+
+
+
     }
 
     private  void goToSignUp(){
@@ -201,5 +218,19 @@ public class login extends AppCompatActivity {
         Intent intent = new Intent(login.this,MainActivity.class);
         intent.putExtra("UserName",UserName);
         startActivity(intent);
+    }
+
+
+
+    public static boolean hasPermissions(Context context, String... permissions){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && context !=null && permissions!=null){
+            for(String permission : permissions){
+                if(ActivityCompat.checkSelfPermission(context,permission)!= PackageManager.PERMISSION_GRANTED){
+                    return  false;
+                }
+            }
+        }
+        return true;
+
     }
 }
