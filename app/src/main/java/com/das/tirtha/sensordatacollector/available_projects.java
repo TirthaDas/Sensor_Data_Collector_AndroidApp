@@ -55,6 +55,7 @@ public class available_projects extends Fragment {
     private void getProjectsList() {
         String ip = getResources().getString(R.string.IP);
         String url=ip+"api/posts";
+        String msg="hello";
 
         JsonObjectRequest request= new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
