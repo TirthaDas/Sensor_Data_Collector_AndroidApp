@@ -3,6 +3,7 @@ package com.das.tirtha.sensordatacollector;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -98,6 +99,12 @@ public class projectDetails extends AppCompatActivity {
                             stringBuilder.append("\n");
                         }
                         showToast(stringBuilder.toString());
+
+                        //call the service
+
+                        Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
+                        serviceIntent.putExtra("sensors",stringBuilder.toString());
+                        startService(serviceIntent);
                     } else {
                         showToast("No Selection");
                     }
