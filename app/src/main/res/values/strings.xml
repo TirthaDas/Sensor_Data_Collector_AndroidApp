@@ -8,7 +8,7 @@
     <string name="gender_err">Select gender</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="IP">http://192.168.0.22:3000/</string>
+    <string name="IP">http://192.168.0.39:3000/</string>
     <!--<string name="IP">http://10.156.78.208:3000/ </string>-->
 
 

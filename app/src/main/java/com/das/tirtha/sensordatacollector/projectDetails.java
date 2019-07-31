@@ -1,8 +1,16 @@
 package com.das.tirtha.sensordatacollector;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,13 +28,20 @@ import java.util.List;
 
 public class projectDetails extends AppCompatActivity {
     private String[] data = new String[2];
-    private TextView project_detail_title,mTitle;
-    private ArrayList<Sensors> SensorList=new ArrayList<>();
+    private TextView project_detail_title, mTitle;
+    private ArrayList<Sensors> SensorList = new ArrayList<>();
     private SensorsListAdapter sensorsListAdapter;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private ActionMode actionMode;
     private Button startProject;
+    private int STORAGE_PERMISSION_CODE = 1;
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.BODY_SENSORS,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +50,10 @@ public class projectDetails extends AppCompatActivity {
 
         // bind the components
 //        project_detail_title = findViewById(R.id.project_detail_title);
-        recyclerView= findViewById(R.id.sensor_list_recycler_view);
-        toolbar=findViewById(R.id.project_detail_toolbar);
-        mTitle =  toolbar.findViewById(R.id.toolbar_title);
-        startProject=findViewById(R.id.start_project);
+        recyclerView = findViewById(R.id.sensor_list_recycler_view);
+        toolbar = findViewById(R.id.project_detail_toolbar);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
+        startProject = findViewById(R.id.start_project);
 
 
         //set up toolbar
@@ -59,13 +74,19 @@ public class projectDetails extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        sensorsListAdapter = new SensorsListAdapter(this,SensorList);
+        sensorsListAdapter = new SensorsListAdapter(this, SensorList);
         recyclerView.setAdapter(sensorsListAdapter);
         getAllAvailableSensor();
 
         startProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // runtime permissions handled first
+//              if(ContextCompat.checkSelfPermission(projectDetails.this,Permissions))
+                hasStoragePermissions(projectDetails.this, permissions);
+                hasSensorsPermissions(projectDetails.this,permissions);
+
+
                 if (sensorsListAdapter.getSelected().size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
                     for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
@@ -78,8 +99,6 @@ public class projectDetails extends AppCompatActivity {
                 }
             }
         });
-
-
 
 
     }
@@ -116,12 +135,13 @@ public class projectDetails extends AppCompatActivity {
         }
         return data;
     }
-    public  void getAllAvailableSensor() {
+
+    public void getAllAvailableSensor() {
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        SensorList=new ArrayList<>();
+        SensorList = new ArrayList<>();
         for (int x = 0; x < sensors.size(); x++) {
-            Sensors sensor=new Sensors();
+            Sensors sensor = new Sensors();
             sensor.setName(sensors.get(x).getName());
             sensor.setType(sensors.get(x).getType());
             sensor.setVendor(sensors.get(x).getVendor());
@@ -131,6 +151,7 @@ public class projectDetails extends AppCompatActivity {
 
 
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -139,5 +160,60 @@ public class projectDetails extends AppCompatActivity {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    public void hasStoragePermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission needed")
+                            .setMessage("the app needs to access device storage to record sensor data")
+                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+
+                                }
+                            }).create().show();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                }
+            }
+        }
+
+    }
+    public void hasSensorsPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BODY_SENSORS)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission Required")
+                            .setMessage("the app needs to access hardware sensors of this device to collect sensor data")
+                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
+
+                                }
+                            }).create().show();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
+                }
+            }
+        }
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showToast("Permission Granted");
+            } else {
+                showToast("Permission Denied");
+            }
+        }
     }
 }
