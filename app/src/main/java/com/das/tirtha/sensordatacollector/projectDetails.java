@@ -82,15 +82,15 @@ public class projectDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // runtime permissions handled first
-//              if(ContextCompat.checkSelfPermission(projectDetails.this,Permissions))
-                if(!hasStoragePermissions(projectDetails.this, permissions)){
+
+                if(!hasSensorsPermissions(projectDetails.this,permissions) || !hasStoragePermissions(projectDetails.this, permissions)){
+                    requestSensorPermission();
                     requestStoragePermission();
                 }
-                else if(!hasSensorsPermissions(projectDetails.this,permissions)){
-                    requestSensorPermission();
+                if(hasSensorsPermissions(projectDetails.this,permissions) && hasStoragePermissions(projectDetails.this, permissions)) {
 
-                }
-                else {
+                    //sensor project can be started here now
+
                     if (sensorsListAdapter.getSelected().size() > 0) {
                         StringBuilder stringBuilder = new StringBuilder();
                         for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
