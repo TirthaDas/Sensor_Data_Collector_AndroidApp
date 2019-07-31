@@ -83,20 +83,28 @@ public class projectDetails extends AppCompatActivity {
             public void onClick(View v) {
                 // runtime permissions handled first
 //              if(ContextCompat.checkSelfPermission(projectDetails.this,Permissions))
-                hasStoragePermissions(projectDetails.this, permissions);
-                hasSensorsPermissions(projectDetails.this,permissions);
-
-
-                if (sensorsListAdapter.getSelected().size() > 0) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
-                        stringBuilder.append(sensorsListAdapter.getSelected().get(i).getName());
-                        stringBuilder.append("\n");
-                    }
-                    showToast(stringBuilder.toString());
-                } else {
-                    showToast("No Selection");
+                if(!hasStoragePermissions(projectDetails.this, permissions)){
+                    requestStoragePermission();
                 }
+                else if(!hasSensorsPermissions(projectDetails.this,permissions)){
+                    requestSensorPermission();
+
+                }
+                else {
+                    if (sensorsListAdapter.getSelected().size() > 0) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
+                            stringBuilder.append(sensorsListAdapter.getSelected().get(i).getName());
+                            stringBuilder.append("\n");
+                        }
+                        showToast(stringBuilder.toString());
+                    } else {
+                        showToast("No Selection");
+                    }
+                }
+
+
+
             }
         });
 
@@ -162,49 +170,65 @@ public class projectDetails extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-    public void hasStoragePermissions(Context context, String... permissions) {
+    public boolean hasStoragePermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission needed")
-                            .setMessage("the app needs to access device storage to record sensor data")
-                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-
-                                }
-                            }).create().show();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-                }
+                return false;
+            }
+            else {
+                return true;
             }
         }
+        return true;
 
     }
-    public void hasSensorsPermissions(Context context, String... permissions) {
+    public boolean hasSensorsPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BODY_SENSORS)) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission Required")
-                            .setMessage("the app needs to access hardware sensors of this device to collect sensor data")
-                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
-
-                                }
-                            }).create().show();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
-                }
+                return false;
+            }else {
+                return true;
             }
         }
+        return true;
 
     }
 
+
+    public void requestSensorPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BODY_SENSORS)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission Required")
+                    .setMessage("the app needs to access hardware sensors of this device to collect sensor data")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
+
+                        }
+                    }).create().show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BODY_SENSORS}, STORAGE_PERMISSION_CODE);
+        }
+    }
+
+
+    public void requestStoragePermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission Required")
+                    .setMessage("the app needs to access device storage to record sensor data")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(projectDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+
+                        }
+                    }).create().show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
