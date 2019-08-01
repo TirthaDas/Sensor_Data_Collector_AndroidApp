@@ -9,10 +9,20 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.das.tirtha.sensordatacollector.NotificaltionChannel.ChannelId;
 
@@ -79,6 +89,11 @@ public class SensorService extends Service {
     class SensorRunnable implements Runnable, SensorEventListener {
         private SensorManager sensorManager;
         Sensor sensor1;
+        public final static String APP_PATH_SD_CARD = "/SensorDataCollector";
+        String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD;
+        FileOutputStream fOut;
+        private FileWriter writer;
+        File sensorFile;
 
         SensorRunnable(SensorManager sensorManager,Sensor sensor){
             Log.d(TAG, "SensorRunnable: "+" INITIALIZING SENSOR SERVICES");
@@ -89,8 +104,20 @@ public class SensorService extends Service {
 
         @Override
         public void run() {
+            String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
+            Log.d(TAG, "run: dateeee"+date);
 
+            try {
+                File dir = new File(fullPath);
+                 sensorFile = new File(dir, "Accer"+date+".txt");
 
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+            }
+            catch(Exception e){
+                Log.w("creating file error", e.toString());
+            }
             sensorManager.registerListener(this,sensor1,SensorManager.SENSOR_DELAY_FASTEST);
 
             Log.d(TAG, "SensorRunnable: "+" Registered SENSOR listener");
@@ -113,6 +140,24 @@ public class SensorService extends Service {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             Log.d(TAG, "onSensorChanged: "+"x value"+sensorEvent.values[0]+"\n"+"y value"+sensorEvent.values[1]+"\n"+"z value"+sensorEvent.values[2]);
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
+            long timeInMillis = (new Date()).getTime()
+                    + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+            try {
+                writer = new FileWriter(sensorFile,true);
+            } catch (IOException e) {
+                Log.e(TAG, "onSensorChanged: ERRRRRR",e );
+                e.printStackTrace();
+            }
+
+            try {
+                writer.write("x_value: "+x+","+"y_value: "+y+","+"z_value: "+z+","+"TimeStamp:"+sensorEvent.timestamp+","+"TimeStamp In Milliseconds"+timeInMillis+"\n");
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
