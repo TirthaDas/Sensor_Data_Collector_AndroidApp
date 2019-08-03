@@ -104,6 +104,7 @@ public class projectDetails extends AppCompatActivity {
 
                         Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
                         serviceIntent.putExtra("sensors",stringBuilder.toString());
+
                         startService(serviceIntent);
                     } else {
                         showToast("No Selection");

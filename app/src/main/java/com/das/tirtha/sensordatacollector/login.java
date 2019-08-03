@@ -156,6 +156,8 @@ public class login extends AppCompatActivity {
                                     Toast.makeText(login.this,message,Toast.LENGTH_SHORT).show();
                                     sp.edit().putBoolean("logged",true).apply();
                                     sp.edit().putString("UserName",UserName).apply();
+                                    sp.edit().putString("UserId",UserID).apply();
+
                                     gotToMainActivity(UserName);
                                 }
                                 else if(mStatusCode==201 || mStatusCode==202 ) {
