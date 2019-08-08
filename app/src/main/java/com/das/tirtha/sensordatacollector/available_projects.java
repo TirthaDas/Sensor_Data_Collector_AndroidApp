@@ -68,8 +68,16 @@ public class available_projects extends Fragment {
                                 JSONObject projectData1=projects.getJSONObject(i);
                                 String projectTitle=projectData1.getString("title");
                                 String projectDesciption=projectData1.getString("content");
+                                ArrayList<String> listdata = new ArrayList<String>();
+                                JSONArray sensorList=projectData1.getJSONArray("sensorList");
+                                if (sensorList != null) {
+                                    for (int k=0;k<sensorList.length();k++){
+                                        listdata.add(sensorList.getString(k));
+                                    }
+                                }
+                                Log.d(TAG, "onResponse000:  sensor list"+sensorList);
                                 Log.d(TAG, "onResponse: "+projectTitle);
-                                mprojectList.add(new projectData(projectTitle,projectDesciption));
+                                mprojectList.add(new projectData(projectTitle,projectDesciption,listdata));
                             }
                             mprojectsAdapter=new projectsAdapter(getActivity(),mprojectList);
                             mrecyclerView.setAdapter(mprojectsAdapter);

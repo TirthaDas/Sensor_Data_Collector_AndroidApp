@@ -18,6 +18,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.View;
 import android.widget.Button;
@@ -77,7 +78,8 @@ public class projectDetails extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         sensorsListAdapter = new SensorsListAdapter(this, SensorList);
         recyclerView.setAdapter(sensorsListAdapter);
-        getAllAvailableSensor();
+        ArrayList<String> sensorList=getSensorList();
+        getAllAvailableSensor(sensorList);
 
         startProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +140,8 @@ public class projectDetails extends AppCompatActivity {
                 projectDescription = extras.getString("Project_Description");
                 data[0] = projectTitle;
                 data[1] = projectDescription;
-//                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
+                ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
+                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
 
             }
         } else {
@@ -151,18 +154,39 @@ public class projectDetails extends AppCompatActivity {
         }
         return data;
     }
+    public ArrayList<String> getSensorList(){
+        Bundle extras = getIntent().getExtras();
+        ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
+        return  sensorList;
+    }
 
-    public void getAllAvailableSensor() {
+    public void getAllAvailableSensor(ArrayList<String > sensorList) {
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+
         SensorList = new ArrayList<>();
+    for(int h=0;h<sensorList.size();h++) {
+
+        String searchKey = sensorList.get(h);
         for (int x = 0; x < sensors.size(); x++) {
-            Sensors sensor = new Sensors();
-            sensor.setName(sensors.get(x).getName());
-            sensor.setType(sensors.get(x).getType());
-            sensor.setVendor(sensors.get(x).getVendor());
-            SensorList.add(sensor);
+            String TAG = "hey ";
+            Log.d(TAG, "getAllAvailableSensor:  has sensors from web site" + searchKey+sensors.get(x).getName());
+            if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase()) ){
+                Sensors sensor = new Sensors();
+                sensor.setName(sensors.get(x).getName());
+                sensor.setType(sensors.get(x).getType());
+                sensor.setVendor(sensors.get(x).getVendor());
+                SensorList.add(sensor);
+                break;
+            }
         }
+    }
+
+
+
+
+
+
         sensorsListAdapter.setmSensorList(SensorList);
 
 

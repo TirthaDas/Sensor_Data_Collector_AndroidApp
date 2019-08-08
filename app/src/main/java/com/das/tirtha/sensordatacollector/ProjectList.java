@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class ProjectList extends AppCompatActivity {
     private TextView ProjectList,mTitle;
     private RequestQueue mQueue;
@@ -77,13 +79,17 @@ public class ProjectList extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.d(TAG, "onResponse: hhheeelooo");
+                            Log.d(TAG, "onResponse: hhheeelooo 123");
                             JSONArray projects= response.getJSONArray("posts");
                             for(int i=0;i<projects.length();i++){
                                 JSONObject projectData=projects.getJSONObject(i);
                                 String projectTitle=projectData.getString("title");
                                 String projectDesciption=projectData.getString("content");
-                                Log.d(TAG, "onResponse: "+projectTitle);
+//                                JSONArray sensorList=projectData.getJSONArray("sensorList");
+//                                Log.d(TAG, "onResponse000:  sensor list"+sensorList);
+
+
+                                Log.d(TAG, "onResponse5: "+projectTitle);
                                 ProjectList.append("project title: "+ projectTitle + "\n");
                                 ProjectList.append("project description: "+ projectDesciption+ "\n\n");
 

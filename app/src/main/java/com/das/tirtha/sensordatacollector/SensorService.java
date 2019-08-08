@@ -42,7 +42,7 @@ import static com.das.tirtha.sensordatacollector.NotificaltionChannel.ChannelId;
 public class SensorService extends Service {
     private SensorManager sensorManager;
     private Handler mainHandler = new Handler();
-    Sensor sensor1;
+    Sensor sensor1,accelerometer,gyroscope,light;
     public static final String TAG = "Background Service";
     public static final String Userid = "";
     private SharedPreferences sp;
@@ -50,8 +50,16 @@ public class SensorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // define the sensor manager and all the required sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor1 = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+
+
         sp = getSharedPreferences("login", MODE_PRIVATE);
 
 
@@ -83,7 +91,7 @@ public class SensorService extends Service {
     }
 
     public void startThread(SensorManager sensorManager, Sensor sensor1) {
-        SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1);
+        SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1,accelerometer,gyroscope);
         new Thread(sensorRunnable).start();
     }
 
@@ -105,30 +113,32 @@ public class SensorService extends Service {
 
     //Thread for background work
     class SensorRunnable implements Runnable, SensorEventListener {
-        private  Handler sensorThreadHandler;
+        private Handler sensorThreadHandler;
         private Looper sensorThreadLooper;
         private SensorManager sensorManager;
         private boolean dataUploaded = false;
         private boolean mIsSensorUpdateEnabled = false;
-        Sensor sensor1;
+        Sensor sensor1,accel,gyro;
         public final static String APP_PATH_SD_CARD = "/SensorDataCollector";
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD;
         FileOutputStream fOut;
         private FileWriter writer;
         File sensorFile;
 
-        SensorRunnable(SensorManager sensorManager, Sensor sensor) {
+        SensorRunnable(SensorManager sensorManager, Sensor sensor,Sensor accel,Sensor gyro) {
             Log.d(TAG, "SensorRunnable: " + " INITIALIZING SENSOR SERVICES");
             this.sensor1 = sensor;
             this.sensorManager = sensorManager;
+            this.accel=accel;
+            this.gyro=gyro;
 
         }
 
         @Override
         public void run() {
             Looper.prepare();
-            sensorThreadLooper=Looper.myLooper();
-            sensorThreadHandler= new Handler();
+            sensorThreadLooper = Looper.myLooper();
+            sensorThreadHandler = new Handler();
             String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
             Log.d(TAG, "run: dateeee" + date);
 
@@ -156,7 +166,8 @@ public class SensorService extends Service {
                 stopListeningToSensor();
                 return;
             }
-            Log.d(TAG, "onSensorChanged: " + "x value" + sensorEvent.values[0] + "\n" + "y value" + sensorEvent.values[1] + "\n" + "z value" + sensorEvent.values[2]);
+//            Log.d(TAG, "onSensorChanged: " + "x value" + sensorEvent.values[0] + "\n" + "y value" + sensorEvent.values[1] + "\n" + "z value" + sensorEvent.values[2]);
+            Log.d(TAG, "onSensorChanged: sensor type"+sensorEvent.sensor.getName());
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
@@ -185,7 +196,10 @@ public class SensorService extends Service {
 
         public void startListeningToSensor() {
             Log.d(TAG, "startListeningToSensor: starting sensor");
-            sensorManager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_FASTEST);
+//            sensorManager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(this, gyro, SensorManager.SENSOR_DELAY_FASTEST);
+
             mIsSensorUpdateEnabled = true;
             startTimer();
 
@@ -257,7 +271,7 @@ public class SensorService extends Service {
                         } else {
                             // do something here
                             Log.d(TAG, "data uploaded succesfully: ");
-                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1);
+                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1,accelerometer,gyroscope);
                             new Thread(sensorRunnable).start();
                         }
                     } catch (IOException e) {

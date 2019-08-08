@@ -9,11 +9,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class Project_Description extends AppCompatActivity {
     private TextView projectDescription,mTitle;
     private String[] data = new String[2];
     private Toolbar toolbar;
     private Button selectSensors;
+    private String projectTitle;
+    private String projectDescriptionContent;
+    private ArrayList<String> sensorList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,18 +39,24 @@ public class Project_Description extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //get data from shared preference
-        data = getExtasFromIntent(savedInstanceState);
-        final String Project_desc=data[1];
-        final String Project_title=data[0];
-        projectDescription.setText(data[1]);
+//        data,sensorList = getExtasFromIntent(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        projectTitle = extras.getString("Project_title");
+        projectDescriptionContent = extras.getString("Project_Description");
+        sensorList=extras.getStringArrayList("sensorList");
+//        final String Project_desc=data[1];
+//        final String Project_title=data[0];
+//        final ArrayList<String> sensorList=data[2];
+        projectDescription.setText(projectDescriptionContent);
 
 
         selectSensors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Project_Description.this,projectDetails.class);
-                intent.putExtra("Project_title",Project_title);
-                intent.putExtra("Project_Description",Project_desc);
+                intent.putExtra("Project_title",projectTitle);
+                intent.putExtra("Project_Description",projectDescriptionContent);
+                intent.putExtra("sensorList",sensorList);
 
                startActivity(intent);
             }
@@ -66,6 +77,7 @@ public class Project_Description extends AppCompatActivity {
         String[] data = new String[2];
         String projectTitle;
         String projectDescription;
+        ArrayList<String> sensorList;
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -74,14 +86,16 @@ public class Project_Description extends AppCompatActivity {
                 projectDescription = null;
                 data[0] = projectTitle;
                 data[1] = projectDescription;
+                sensorList= null;
 //                Toast.makeText(Project_Description.this, "no extras found", Toast.LENGTH_SHORT).show();
 
             } else {
                 projectTitle = extras.getString("Project_title");
                 projectDescription = extras.getString("Project_Description");
+                sensorList=extras.getStringArrayList("sensorList");
                 data[0] = projectTitle;
                 data[1] = projectDescription;
-//                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"welcome here"+sensorList,Toast.LENGTH_SHORT).show();
 
             }
         } else {
@@ -89,6 +103,8 @@ public class Project_Description extends AppCompatActivity {
             projectDescription = (String) savedInstanceState.getSerializable("Project_Description");
             data[0] = projectTitle;
             data[1] = projectDescription;
+            sensorList=null;
+
 //            Toast.makeText(projectDetails.this,"welcome here 1 "+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
 
         }

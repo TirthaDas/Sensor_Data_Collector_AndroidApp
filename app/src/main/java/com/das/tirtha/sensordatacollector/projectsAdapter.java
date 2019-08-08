@@ -31,7 +31,7 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
 
     @Override
     public void onBindViewHolder(@NonNull projectsViewHolder projectsViewHolder, final int i) {
-        projectData projectData=mprojectList.get(i);
+        final projectData projectData=mprojectList.get(i);
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
 
@@ -47,6 +47,7 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
                 Intent intent = new Intent(context,Project_Description.class);
                 intent.putExtra("Project_title",mprojectList.get(i).getProjectTitle());
                 intent.putExtra("Project_Description",mprojectList.get(i).getDescription());
+                intent.putExtra("sensorList",mprojectList.get(i).getSensorList());
 
                 context.startActivity(intent);
 
