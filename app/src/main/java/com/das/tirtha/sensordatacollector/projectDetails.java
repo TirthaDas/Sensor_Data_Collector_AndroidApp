@@ -97,7 +97,7 @@ public class projectDetails extends AppCompatActivity {
                     if (sensorsListAdapter.getSelected().size() > 0) {
                         StringBuilder stringBuilder = new StringBuilder();
                         for (int i = 0; i < sensorsListAdapter.getSelected().size(); i++) {
-                            stringBuilder.append(sensorsListAdapter.getSelected().get(i).getName());
+                            stringBuilder.append(sensorsListAdapter.getSelected().get(i).getType());
                             stringBuilder.append("\n");
                         }
                         showToast(stringBuilder.toString());
@@ -170,11 +170,11 @@ public class projectDetails extends AppCompatActivity {
         String searchKey = sensorList.get(h);
         for (int x = 0; x < sensors.size(); x++) {
             String TAG = "hey ";
-            Log.d(TAG, "getAllAvailableSensor:  has sensors from web site" + searchKey+sensors.get(x).getName());
+            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
             if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase()) ){
                 Sensors sensor = new Sensors();
                 sensor.setName(sensors.get(x).getName());
-                sensor.setType(sensors.get(x).getType());
+                sensor.setType(sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')+1));
                 sensor.setVendor(sensors.get(x).getVendor());
                 SensorList.add(sensor);
                 break;

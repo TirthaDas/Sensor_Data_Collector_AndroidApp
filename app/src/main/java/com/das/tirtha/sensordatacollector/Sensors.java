@@ -7,7 +7,8 @@ import java.io.Serializable;
 public class Sensors implements Serializable {
     private String Name;
     private String Vendor;
-    private Integer type;
+    private String type;
+
     private boolean isChecked = false;
 
     public boolean isChecked() {
@@ -26,7 +27,7 @@ public class Sensors implements Serializable {
         return Vendor;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
@@ -37,7 +38,7 @@ public class Sensors implements Serializable {
     public void setName(String name) {
         this.Name = name;
     }
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
