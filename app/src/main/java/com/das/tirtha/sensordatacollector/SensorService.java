@@ -112,6 +112,9 @@ public class SensorService extends Service {
             }
         }
 
+        Log.d(TAG, "ALL THAT ARE TRUE: "+listenT0Aaccelerometer+ listenToGyroscope+ listenToLight+ listenToMagnetic+ listenToGravity+ listenToTemperature+listenToProximity+ listenToGameRotationVector);
+
+
         // start notification here.
         Intent notificationIntent = new Intent(this, projectDetails.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -200,22 +203,28 @@ public class SensorService extends Service {
                     accelerometerFile=new File(dir, "Accelerometer" + date + ".txt");
                 }
                 if(listenToGyroscope){
-                    magneticFile=new File(dir, "Magnetic" + date + ".txt");
-
-                }if(listenToGravity){
-                    lightFile=new File(dir, "Light" + date + ".txt");
-
-                }if(listenToGameRotationVector){
                     gyroscopeFile=new File(dir, "Gyroscope" + date + ".txt");
 
-                }if(listenToTemperature){
+                    Log.d(TAG, " gyroscope file made: ");
+
+                }if(listenToGravity){
                     gravityFile=new File(dir, "Gravity" + date + ".txt");
 
-                }if(listenToLight){
+
+                }if(listenToGameRotationVector){
+                    gameRotationVectorFile=new File(dir, "GameRotationVector" + date + ".txt");
+
+
+                }if(listenToTemperature){
                     temperatureFile=new File(dir, "Temperature" + date + ".txt");
 
+
+                }if(listenToLight){
+                    lightFile=new File(dir, "Light" + date + ".txt");
+
                 }if(listenToMagnetic){
-                    gameRotationVectorFile=new File(dir, "GameRotationVector" + date + ".txt");
+                    magneticFile=new File(dir, "Magnetic" + date + ".txt");
+
 
                 }if(listenToProximity){
                     proximityFile=new File(dir, "Proximity" + date + ".txt");
@@ -469,6 +478,34 @@ public class SensorService extends Service {
                             Log.d(TAG, "onFinish: TIMER OVER");
                             stopListeningToSensor();
                             uploadDataToServer(sensorFile);
+                            if(listenT0Aaccelerometer){
+                                uploadDataToServer(accelerometerFile);
+
+                            }
+                            if(listenToGyroscope){
+                                uploadDataToServer(gyroscopeFile);
+
+
+                            }if(listenToGravity){
+                                uploadDataToServer(gravityFile);
+
+
+                            }if(listenToGameRotationVector){
+                                uploadDataToServer(gameRotationVectorFile);
+
+                            }if(listenToTemperature){
+                                uploadDataToServer(temperatureFile);
+
+                            }if(listenToLight){
+                                uploadDataToServer(lightFile);
+
+                            }if(listenToMagnetic){
+                                uploadDataToServer(magneticFile);
+
+                            }if(listenToProximity){
+                                uploadDataToServer(proximityFile);
+
+                            }
 
                         }
                     }.start();
