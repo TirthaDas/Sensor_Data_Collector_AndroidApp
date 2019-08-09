@@ -79,7 +79,6 @@ public class SensorService extends Service {
         String[] Sensors = input.split("\\r?\\n");
 
         // set which sensors to listen to as true.
-
         for (int x = 0; x < Sensors.length; x++) {
             Log.d(TAG, "first sensor: " + Sensors[x]);
             switch (Sensors[x]) {
@@ -135,8 +134,52 @@ public class SensorService extends Service {
     }
 
     public void startThread(SensorManager sensorManager, Sensor sensor1,Sensor accelerometer,Sensor gyroscope,Sensor light,Sensor magnetic,Sensor gravity,Sensor temperature,Sensor proximity,Sensor gameRotationVector) {
-        SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1, accelerometer, gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector);
-        new Thread(sensorRunnable).start();
+
+        if(listenToProximity){
+            SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager,  proximity);
+            new Thread(ProximityRunnable).start();
+
+        }
+        if(listenToMagnetic){
+            SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager,  magnetic);
+            new Thread(MagneticRunnable).start();
+        }
+        if(listenToTemperature){
+            SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager,  temperature);
+            new Thread(TemperatureRunnable).start();
+
+        }
+        if(listenToLight){
+            SensorRunnable LightRunnable = new SensorRunnable(sensorManager,  light);
+            new Thread(LightRunnable).start();
+
+        }
+        if(listenToGameRotationVector){
+            SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager,  gameRotationVector);
+            new Thread(GameRotationVectorRunnable).start();
+
+        }
+        if(listenT0Aaccelerometer){
+            SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager,  accelerometer);
+            new Thread(AccelerometerRunnable).start();
+
+        }
+        if(listenToGyroscope){
+            SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager,  gyroscope);
+            new Thread(GyroscopeRunnable).start();
+
+        }
+        if(listenToGravity){
+            SensorRunnable GravityRunnable = new SensorRunnable(sensorManager,  gravity);
+            new Thread(GravityRunnable).start();
+
+        }
+
+
+
+//        SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1, accelerometer, gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector);
+
+//        new Thread(sensorRunnable).start();
     }
 
     public void stopThread() {
@@ -162,29 +205,32 @@ public class SensorService extends Service {
         private SensorManager sensorManager;
         private boolean dataUploaded = false;
         private boolean mIsSensorUpdateEnabled = false;
-        Sensor sensor1, accel, gyro;
+        Sensor sensor1, accel, gyro,Sensor123;
         Sensor accelerometer,gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector;
         public final static String APP_PATH_SD_CARD = "/SensorDataCollector";
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD;
         FileOutputStream fOut;
         private FileWriter writer,accelerometerWriter,gyroscopeWriter,temperatureWriter,magneticWriter,lightWriter,gravityWriter,proximityWriter,gameRotationVectorWriter;
         File sensorFile;
-        File accelerometerFile, gyroscopeFile,lightFile, magneticFile, gravityFile, temperatureFile, proximityFile, gameRotationVectorFile;
+//        File accelerometerFile, gyroscopeFile,lightFile, magneticFile, gravityFile, temperatureFile, proximityFile, gameRotationVectorFile;
 
-        SensorRunnable(SensorManager sensorManager, Sensor sensor, Sensor accelerometer,Sensor gyroscope,Sensor light,Sensor magnetic,Sensor gravity,Sensor temperature,Sensor proximity,Sensor gameRotationVector) {
+//        SensorRunnable(SensorManager sensorManager, Sensor sensor, Sensor accelerometer,Sensor gyroscope,Sensor light,Sensor magnetic,Sensor gravity,Sensor temperature,Sensor proximity,Sensor gameRotationVector) {
+        SensorRunnable(SensorManager sensorManager, Sensor sensor) {
+
             Log.d(TAG, "SensorRunnable: " + " INITIALIZING SENSOR SERVICES");
-            this.sensor1 = sensor;
+//            this.sensor1 = sensor;
             this.sensorManager = sensorManager;
-            this.accel = accel;
-            this.gyro = gyro;
-            this.accelerometer=accelerometer;
-            this.gyroscope=gyroscope;
-            this.light=light;
-            this.magnetic=magnetic;
-            this.gravity=gravity;
-            this.temperature=temperature;
-            this.proximity=proximity;
-            this.gameRotationVector=gameRotationVector;
+//            this.accel = accel;
+//            this.gyro = gyro;
+//            this.accelerometer=accelerometer;
+//            this.gyroscope=gyroscope;
+//            this.light=light;
+//            this.magnetic=magnetic;
+//            this.gravity=gravity;
+//            this.temperature=temperature;
+//            this.proximity=proximity;
+//            this.gameRotationVector=gameRotationVector;
+            this.Sensor123=sensor;
 
         }
 
@@ -198,38 +244,45 @@ public class SensorService extends Service {
 
             try {
                 File dir = new File(fullPath);
-                sensorFile = new File(dir, "Accer" + date + ".txt");
-                if(listenT0Aaccelerometer){
-                    accelerometerFile=new File(dir, "Accelerometer" + date + ".txt");
-                }
-                if(listenToGyroscope){
-                    gyroscopeFile=new File(dir, "Gyroscope" + date + ".txt");
+                sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.')+1)+ date + ".txt");
 
-                    Log.d(TAG, " gyroscope file made: ");
-
-                }if(listenToGravity){
-                    gravityFile=new File(dir, "Gravity" + date + ".txt");
-
-
-                }if(listenToGameRotationVector){
-                    gameRotationVectorFile=new File(dir, "GameRotationVector" + date + ".txt");
-
-
-                }if(listenToTemperature){
-                    temperatureFile=new File(dir, "Temperature" + date + ".txt");
-
-
-                }if(listenToLight){
-                    lightFile=new File(dir, "Light" + date + ".txt");
-
-                }if(listenToMagnetic){
-                    magneticFile=new File(dir, "Magnetic" + date + ".txt");
-
-
-                }if(listenToProximity){
-                    proximityFile=new File(dir, "Proximity" + date + ".txt");
-
-                }
+//                if(listenT0Aaccelerometer){
+//                    accelerometerFile=new File(dir, "Accelerometer" + date + ".txt");
+//                }
+//                if(listenToGyroscope){
+//                    gyroscopeFile=new File(dir, "Gyroscope" + date + ".txt");
+//
+//                    Log.d(TAG, " gyroscope file made: ");
+//
+//                }
+//                if(listenToGravity){
+//                    gravityFile=new File(dir, "Gravity" + date + ".txt");
+//
+//
+//                }
+//                if(listenToGameRotationVector){
+//                    gameRotationVectorFile=new File(dir, "GameRotationVector" + date + ".txt");
+//
+//
+//                }
+//                if(listenToTemperature){
+//                    temperatureFile=new File(dir, "Temperature" + date + ".txt");
+//
+//
+//                }
+//                if(listenToLight){
+//                    lightFile=new File(dir, "Light" + date + ".txt");
+//
+//                }
+//                if(listenToMagnetic){
+//                    magneticFile=new File(dir, "Magnetic" + date + ".txt");
+//
+//
+//                }
+//                if(listenToProximity){
+//                    proximityFile=new File(dir, "Proximity" + date + ".txt");
+//
+//                }
 
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -238,7 +291,7 @@ public class SensorService extends Service {
                 Log.w("creating file error", e.toString());
             }
 //            sensorManager.registerListener(this,sensor1,SensorManager.SENSOR_DELAY_FASTEST);
-            startListeningToSensor();
+            startListeningToSensor(Sensor123);
 
             Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
 
@@ -262,7 +315,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: AACELEROMETER _Z-AXIS" + sensorEvent.values[2]);
                     long accelerometerTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        accelerometerWriter = new FileWriter(accelerometerFile, true);
+                        accelerometerWriter = new FileWriter(sensorFile, true);
                         accelerometerWriter.write("Acceleration force along the x axis : " + sensorEvent.values[0] + "," + "Acceleration force along the y axis : " + sensorEvent.values[1] + "," + "Acceleration force along the z axis : " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + accelerometerTimeInMillis + "\n");
                         accelerometerWriter.close();
                     } catch (IOException e) {
@@ -277,7 +330,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the z axis" + sensorEvent.values[2]);
                     long gyroscopeTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        gyroscopeWriter = new FileWriter(gyroscopeFile, true);
+                        gyroscopeWriter = new FileWriter(sensorFile, true);
                         gyroscopeWriter.write("  Rate of rotation around the x axis :   " + sensorEvent.values[0] +   "," + "  Rate of rotation around the y axis: " + sensorEvent.values[1] +   "," + "  Rate of rotation around the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gyroscopeTimeInMillis + "\n");
                         gyroscopeWriter.close();
                     } catch (IOException e) {
@@ -292,7 +345,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Z-AXIS" + sensorEvent.values[2]);
                     long magnetic_fieldTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        magneticWriter = new FileWriter(magneticFile, true);
+                        magneticWriter = new FileWriter(sensorFile, true);
                         magneticWriter.write("Geomagnetic field strength along the  x axis :  " + sensorEvent.values[0] +   "," + "  Geomagnetic field strength along the  y axis: " + sensorEvent.values[1] +   "," + "  Geomagnetic field strength along the  z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + magnetic_fieldTimeInMillis + "\n");
                         magneticWriter.close();
                     } catch (IOException e) {
@@ -305,7 +358,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: AMBIENT_TEMPERATURE-------Ambient air temperature."  + sensorEvent.values[0]);
                     long ambient_temperatureTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        temperatureWriter = new FileWriter(temperatureFile, true);
+                        temperatureWriter = new FileWriter(sensorFile, true);
                         temperatureWriter.write("Ambient air temperature. :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + ambient_temperatureTimeInMillis + "\n");
                         temperatureWriter.close();
                     } catch (IOException e) {
@@ -318,7 +371,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: LIGHT illuminance" + sensorEvent.values[0]);
                     long lightTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        lightWriter = new FileWriter(lightFile, true);
+                        lightWriter = new FileWriter(sensorFile, true);
                         lightWriter.write("luminance :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + lightTimeInMillis + "\n");
                         lightWriter.close();
                     } catch (IOException e) {
@@ -333,7 +386,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the z axis" + sensorEvent.values[2]);
                     long gravityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        gravityWriter = new FileWriter(gravityFile, true);
+                        gravityWriter = new FileWriter(sensorFile, true);
                         gravityWriter.write("Force of gravity along the x axis :  " + sensorEvent.values[0] +   "," + "  Force of gravity along the y axis " + sensorEvent.values[1] +   "," + "  Force of gravity along the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gravityTimeInMillis + "\n");
                         gravityWriter.close();
                     } catch (IOException e) {
@@ -347,7 +400,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: PROXIMITY---------Distance from object" + sensorEvent.values[0]);
                     long proximityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        proximityWriter = new FileWriter(proximityFile, true);
+                        proximityWriter = new FileWriter(sensorFile, true);
                         proximityWriter.write("Distance from object :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + proximityTimeInMillis + "\n");
                         proximityWriter.close();
                     } catch (IOException e) {
@@ -361,7 +414,7 @@ public class SensorService extends Service {
                     Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the z axis " + sensorEvent.values[2]);
                     long game_rotation_vectorTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
-                        gameRotationVectorWriter = new FileWriter(gameRotationVectorFile, true);
+                        gameRotationVectorWriter = new FileWriter(sensorFile, true);
                         gameRotationVectorWriter.write("Rotation vector component along the x axis: " + sensorEvent.values[0] + "," +
                                 "Rotation vector component along the y axis: " + sensorEvent.values[1]+ "," + "Rotation vector component along the z axis: " + sensorEvent.values[2] + "," +
                                 "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + game_rotation_vectorTimeInMillis + "\n");
@@ -377,26 +430,6 @@ public class SensorService extends Service {
             }
 
 
-            // the below code was originally designed to write only accelerometer data.
-
-//            float x = sensorEvent.values[0];
-//            float y = sensorEvent.values[1];
-//            float z = sensorEvent.values[2];
-//            long timeInMillis = (new Date()).getTime()
-//                    + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
-//            try {
-//                writer = new FileWriter(sensorFile, true);
-//            } catch (IOException e) {
-//                Log.e(TAG, "onSensorChanged: ERRRRRR", e);
-//                e.printStackTrace();
-//            }
-//
-//            try {
-//                writer.write("x_value: " + x + "," + "y_value: " + y + "," + "z_value: " + z + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + timeInMillis + "\n");
-//                writer.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
 
         }
 
@@ -405,43 +438,43 @@ public class SensorService extends Service {
 
         }
 
-        public void startListeningToSensor() {
-            Log.d(TAG, "startListeningToSensor: starting sensor");
-//            sensorManager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_FASTEST);
+        public void startListeningToSensor(Sensor Sensor123) {
+//            Log.d(TAG, "startListeningToSensor: starting sensor"+Sensor123.getStringType());
+            sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
 //            sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 //            sensorManager.registerListener(this, gyro, SensorManager.SENSOR_DELAY_FASTEST);
-            if(listenToProximity){
-                sensorManager.registerListener(this, proximity, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToMagnetic){
-                sensorManager.registerListener(this, magnetic, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToTemperature){
-                sensorManager.registerListener(this, temperature, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToLight){
-                sensorManager.registerListener(this, light, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToGameRotationVector){
-                sensorManager.registerListener(this, gameRotationVector, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenT0Aaccelerometer){
-                sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToGyroscope){
-                sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
-            if(listenToGravity){
-                sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-
-            }
+//            if(listenToProximity){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToMagnetic){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToTemperature){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToLight){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToGameRotationVector){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenT0Aaccelerometer){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToGyroscope){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
+//            if(listenToGravity){
+//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+//
+//            }
 
             mIsSensorUpdateEnabled = true;
             startTimer();
@@ -477,35 +510,42 @@ public class SensorService extends Service {
                             String file = sensorFile.getAbsolutePath();
                             Log.d(TAG, "onFinish: TIMER OVER");
                             stopListeningToSensor();
-                            uploadDataToServer(sensorFile);
-                            if(listenT0Aaccelerometer){
-                                uploadDataToServer(accelerometerFile);
-
-                            }
-                            if(listenToGyroscope){
-                                uploadDataToServer(gyroscopeFile);
-
-
-                            }if(listenToGravity){
-                                uploadDataToServer(gravityFile);
-
-
-                            }if(listenToGameRotationVector){
-                                uploadDataToServer(gameRotationVectorFile);
-
-                            }if(listenToTemperature){
-                                uploadDataToServer(temperatureFile);
-
-                            }if(listenToLight){
-                                uploadDataToServer(lightFile);
-
-                            }if(listenToMagnetic){
-                                uploadDataToServer(magneticFile);
-
-                            }if(listenToProximity){
-                                uploadDataToServer(proximityFile);
-
-                            }
+                            uploadDataToServer(sensorFile,Sensor123);
+//                            if(listenT0Aaccelerometer){
+//
+//                                uploadDataToServer(accelerometerFile);
+//
+//                            }
+//                            if(listenToGyroscope){
+//                                uploadDataToServer(gyroscopeFile);
+//
+//
+//                            }
+//                            if(listenToGravity){
+//                                uploadDataToServer(gravityFile);
+//
+//
+//                            }
+//                            if(listenToGameRotationVector){
+//                                uploadDataToServer(gameRotationVectorFile);
+//
+//                            }
+//                            if(listenToTemperature){
+//                                uploadDataToServer(temperatureFile);
+//
+//                            }
+//                            if(listenToLight){
+//                                uploadDataToServer(lightFile);
+//
+//                            }
+//                            if(listenToMagnetic){
+//                                uploadDataToServer(magneticFile);
+//
+//                            }
+//                            if(listenToProximity){
+//                                uploadDataToServer(proximityFile);
+//
+//                            }
 
                         }
                     }.start();
@@ -515,7 +555,7 @@ public class SensorService extends Service {
 
         }
 
-        public void uploadDataToServer(final File sensorFile) {
+        public void uploadDataToServer(final File sensorFile, final Sensor Sensor123) {
             Thread DataUpload = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -542,8 +582,48 @@ public class SensorService extends Service {
                         } else {
                             // do something here
                             Log.d(TAG, "data uploaded succesfully: ");
-                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, sensor1, accelerometer,gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector);
+                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123);
                             new Thread(sensorRunnable).start();
+
+//                            if(listenToProximity){
+//                                SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager,  proximity);
+//                                new Thread(ProximityRunnable).start();
+//
+//                            }
+//                            if(listenToMagnetic){
+//                                SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager,  magnetic);
+//                                new Thread(MagneticRunnable).start();
+//                            }
+//                            if(listenToTemperature){
+//                                SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager,  temperature);
+//                                new Thread(TemperatureRunnable).start();
+//
+//                            }
+//                            if(listenToLight){
+//                                SensorRunnable LightRunnable = new SensorRunnable(sensorManager,  light);
+//                                new Thread(LightRunnable).start();
+//
+//                            }
+//                            if(listenToGameRotationVector){
+//                                SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager,  gameRotationVector);
+//                                new Thread(GameRotationVectorRunnable).start();
+//
+//                            }
+//                            if(listenT0Aaccelerometer){
+//                                SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager,  accelerometer);
+//                                new Thread(AccelerometerRunnable).start();
+//
+//                            }
+//                            if(listenToGyroscope){
+//                                SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager,  gyroscope);
+//                                new Thread(GyroscopeRunnable).start();
+//
+//                            }
+//                            if(listenToGravity){
+//                                SensorRunnable GravityRunnable = new SensorRunnable(sensorManager,  gravity);
+//                                new Thread(GravityRunnable).start();
+//
+//                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
