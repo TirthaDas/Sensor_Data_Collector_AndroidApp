@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public class Project_Description extends AppCompatActivity {
     private Toolbar toolbar;
     private Button selectSensors;
     private String projectTitle;
+    private String projectId;
     private String projectDescriptionContent;
     private ArrayList<String> sensorList;
     @Override
@@ -41,9 +43,13 @@ public class Project_Description extends AppCompatActivity {
         //get data from shared preference
 //        data,sensorList = getExtasFromIntent(savedInstanceState);
         Bundle extras = getIntent().getExtras();
+
+        //get extras
+        projectId=extras.getString("projectId");
         projectTitle = extras.getString("Project_title");
         projectDescriptionContent = extras.getString("Project_Description");
         sensorList=extras.getStringArrayList("sensorList");
+        Log.d("HELLO", "onCreate: PRIDDDD"+projectId);
 //        final String Project_desc=data[1];
 //        final String Project_title=data[0];
 //        final ArrayList<String> sensorList=data[2];
@@ -57,6 +63,7 @@ public class Project_Description extends AppCompatActivity {
                 intent.putExtra("Project_title",projectTitle);
                 intent.putExtra("Project_Description",projectDescriptionContent);
                 intent.putExtra("sensorList",sensorList);
+                intent.putExtra("projectId",projectId);
 
                startActivity(intent);
             }

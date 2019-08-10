@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
         final projectData projectData=mprojectList.get(i);
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
-
+        Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
         projectsViewHolder.projectTitle.setText(Projecttitle);
         projectsViewHolder.projectDescriptoion.setText(ProjectDescription);
 
@@ -45,6 +46,7 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
             {
 //                Toast.makeText(context, "Item "  +i+ " is clicked.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context,Project_Description.class);
+                intent.putExtra("projectId",mprojectList.get(i).getId());
                 intent.putExtra("Project_title",mprojectList.get(i).getProjectTitle());
                 intent.putExtra("Project_Description",mprojectList.get(i).getDescription());
                 intent.putExtra("sensorList",mprojectList.get(i).getSensorList());

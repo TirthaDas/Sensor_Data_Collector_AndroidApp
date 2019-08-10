@@ -6,12 +6,14 @@ public class projectData {
 
     String projectTitle;
     String Description;
+    String id;
     ArrayList<String > sensorList;
-    public projectData(String projectTitle, String Description, ArrayList<String> sensorList)
+    public projectData(String id,String projectTitle, String Description, ArrayList<String> sensorList)
     {
         this.projectTitle = projectTitle;
         this.Description = Description;
         this.sensorList=sensorList;
+        this.id = id;
 
     }
     public String getProjectTitle()
@@ -24,5 +26,8 @@ public class projectData {
     }
     public ArrayList<String> getSensorList(){
         return sensorList;
+    }
+    public String getId(){
+        return id;
     }
 }

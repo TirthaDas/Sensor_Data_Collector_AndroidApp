@@ -106,7 +106,7 @@ public class projectDetails extends AppCompatActivity {
 
                         Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
                         serviceIntent.putExtra("sensors",stringBuilder.toString());
-
+                        serviceIntent.putExtra("projectId",data[2]);
                         startService(serviceIntent);
                     } else {
                         showToast("No Selection");
@@ -122,9 +122,10 @@ public class projectDetails extends AppCompatActivity {
     }
 
     public String[] getExtasFromIntent(Bundle savedInstanceState) {
-        String[] data = new String[2];
+        String[] data = new String[3];
         String projectTitle;
         String projectDescription;
+        String projectId;
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -133,13 +134,16 @@ public class projectDetails extends AppCompatActivity {
                 projectDescription = null;
                 data[0] = projectTitle;
                 data[1] = projectDescription;
+                data[2]="";
                 Toast.makeText(projectDetails.this, "no extras found", Toast.LENGTH_SHORT).show();
 
             } else {
                 projectTitle = extras.getString("Project_title");
                 projectDescription = extras.getString("Project_Description");
+                projectId=extras.getString("projectId");
                 data[0] = projectTitle;
                 data[1] = projectDescription;
+                data[2]=projectId;
                 ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
                 Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
 
@@ -149,6 +153,7 @@ public class projectDetails extends AppCompatActivity {
             projectDescription = (String) savedInstanceState.getSerializable("Project_Description");
             data[0] = projectTitle;
             data[1] = projectDescription;
+            data[2]="";
 //            Toast.makeText(projectDetails.this,"welcome here 1 "+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
 
         }
