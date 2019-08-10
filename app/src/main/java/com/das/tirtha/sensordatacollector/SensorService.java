@@ -592,6 +592,12 @@ public class SensorService extends Service {
                         } else {
                             // do something here
                             Log.d(TAG, "data uploaded succesfully: ");
+
+                            // delete the file form the device
+                            boolean deleted = sensorFile.delete();
+                            Log.d(TAG, "is the file deleted or not "+deleted);
+
+                            //start the thread again
                             SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123,projectId);
                             new Thread(sensorRunnable).start();
 
