@@ -20,8 +20,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.AtomicFile;
 import android.util.Log;
+import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,8 +43,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -48,9 +65,11 @@ public class SensorService extends Service {
     Sensor sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector;
     public static final String TAG = "Background Service";
     public static final String Userid = "";
-//    public  String  projectId="";
     private SharedPreferences sp;
     private boolean listenT0Aaccelerometer, listenToGyroscope, listenToLight, listenToMagnetic, listenToGravity, listenToTemperature, listenToProximity, listenToGameRotationVector;
+    private RequestQueue requestQueue;
+    private int mStatusCode;
+
 
     @Override
     public void onCreate() {
@@ -73,7 +92,6 @@ public class SensorService extends Service {
         sp = getSharedPreferences("login", MODE_PRIVATE);
 
 
-        //get extras
 
 
     }
@@ -131,6 +149,8 @@ public class SensorService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(1, notification);
+
+        registerUserToProject(sp.getString("UserId", "noUsr"),projectId);
 
         // do work here on a separate thread
         startThread(sensorManager, sensor1,accelerometer,gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector,projectId);
@@ -213,31 +233,17 @@ public class SensorService extends Service {
         private boolean mIsSensorUpdateEnabled = false;
         Sensor Sensor123;
         String projectId;
-//        Sensor accelerometer,gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector, sensor1, accel, gyro,;
         public final static String APP_PATH_SD_CARD = "/SensorDataCollector";
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD;
         FileOutputStream fOut;
         private FileWriter writer,accelerometerWriter,gyroscopeWriter,temperatureWriter,magneticWriter,lightWriter,gravityWriter,proximityWriter,gameRotationVectorWriter;
         File sensorFile;
-//        File accelerometerFile, gyroscopeFile,lightFile, magneticFile, gravityFile, temperatureFile, proximityFile, gameRotationVectorFile;
 
-//        SensorRunnable(SensorManager sensorManager, Sensor sensor, Sensor accelerometer,Sensor gyroscope,Sensor light,Sensor magnetic,Sensor gravity,Sensor temperature,Sensor proximity,Sensor gameRotationVector) {
         SensorRunnable(SensorManager sensorManager, Sensor sensor, String projectId) {
 
             Log.d(TAG, "SensorRunnable: " + " INITIALIZING SENSOR SERVICES");
-//            this.sensor1 = sensor;
             this.sensorManager = sensorManager;
             this.projectId=projectId;
-//            this.accel = accel;
-//            this.gyro = gyro;
-//            this.accelerometer=accelerometer;
-//            this.gyroscope=gyroscope;
-//            this.light=light;
-//            this.magnetic=magnetic;
-//            this.gravity=gravity;
-//            this.temperature=temperature;
-//            this.proximity=proximity;
-//            this.gameRotationVector=gameRotationVector;
             this.Sensor123=sensor;
 
         }
@@ -254,51 +260,12 @@ public class SensorService extends Service {
                 File dir = new File(fullPath);
                 sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.')+1)+ date + ".txt");
 
-//                if(listenT0Aaccelerometer){
-//                    accelerometerFile=new File(dir, "Accelerometer" + date + ".txt");
-//                }
-//                if(listenToGyroscope){
-//                    gyroscopeFile=new File(dir, "Gyroscope" + date + ".txt");
-//
-//                    Log.d(TAG, " gyroscope file made: ");
-//
-//                }
-//                if(listenToGravity){
-//                    gravityFile=new File(dir, "Gravity" + date + ".txt");
-//
-//
-//                }
-//                if(listenToGameRotationVector){
-//                    gameRotationVectorFile=new File(dir, "GameRotationVector" + date + ".txt");
-//
-//
-//                }
-//                if(listenToTemperature){
-//                    temperatureFile=new File(dir, "Temperature" + date + ".txt");
-//
-//
-//                }
-//                if(listenToLight){
-//                    lightFile=new File(dir, "Light" + date + ".txt");
-//
-//                }
-//                if(listenToMagnetic){
-//                    magneticFile=new File(dir, "Magnetic" + date + ".txt");
-//
-//
-//                }
-//                if(listenToProximity){
-//                    proximityFile=new File(dir, "Proximity" + date + ".txt");
-//
-//                }
-
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
             } catch (Exception e) {
                 Log.w("creating file error", e.toString());
             }
-//            sensorManager.registerListener(this,sensor1,SensorManager.SENSOR_DELAY_FASTEST);
             startListeningToSensor(Sensor123,projectId);
 
             Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
@@ -447,47 +414,9 @@ public class SensorService extends Service {
         }
 
         public void startListeningToSensor(Sensor Sensor123, String projectId ) {
-//            Log.d(TAG, "startListeningToSensor: starting sensor"+Sensor123.getStringType());
             sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//            sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
-//            sensorManager.registerListener(this, gyro, SensorManager.SENSOR_DELAY_FASTEST);
-//            if(listenToProximity){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToMagnetic){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToTemperature){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToLight){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToGameRotationVector){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenT0Aaccelerometer){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToGyroscope){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-//            if(listenToGravity){
-//                sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
-//
-//            }
-
             mIsSensorUpdateEnabled = true;
             startTimer(projectId);
-
-
         }
 
         public void stopListeningToSensor() {
@@ -519,41 +448,6 @@ public class SensorService extends Service {
                             Log.d(TAG, "onFinish: TIMER OVER");
                             stopListeningToSensor();
                             uploadDataToServer(sensorFile,Sensor123,projectId);
-//                            if(listenT0Aaccelerometer){
-//
-//                                uploadDataToServer(accelerometerFile);
-//
-//                            }
-//                            if(listenToGyroscope){
-//                                uploadDataToServer(gyroscopeFile);
-//
-//
-//                            }
-//                            if(listenToGravity){
-//                                uploadDataToServer(gravityFile);
-//
-//
-//                            }
-//                            if(listenToGameRotationVector){
-//                                uploadDataToServer(gameRotationVectorFile);
-//
-//                            }
-//                            if(listenToTemperature){
-//                                uploadDataToServer(temperatureFile);
-//
-//                            }
-//                            if(listenToLight){
-//                                uploadDataToServer(lightFile);
-//
-//                            }
-//                            if(listenToMagnetic){
-//                                uploadDataToServer(magneticFile);
-//
-//                            }
-//                            if(listenToProximity){
-//                                uploadDataToServer(proximityFile);
-//
-//                            }
 
                         }
                     }.start();
@@ -601,45 +495,7 @@ public class SensorService extends Service {
                             SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123,projectId);
                             new Thread(sensorRunnable).start();
 
-//                            if(listenToProximity){
-//                                SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager,  proximity);
-//                                new Thread(ProximityRunnable).start();
-//
-//                            }
-//                            if(listenToMagnetic){
-//                                SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager,  magnetic);
-//                                new Thread(MagneticRunnable).start();
-//                            }
-//                            if(listenToTemperature){
-//                                SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager,  temperature);
-//                                new Thread(TemperatureRunnable).start();
-//
-//                            }
-//                            if(listenToLight){
-//                                SensorRunnable LightRunnable = new SensorRunnable(sensorManager,  light);
-//                                new Thread(LightRunnable).start();
-//
-//                            }
-//                            if(listenToGameRotationVector){
-//                                SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager,  gameRotationVector);
-//                                new Thread(GameRotationVectorRunnable).start();
-//
-//                            }
-//                            if(listenT0Aaccelerometer){
-//                                SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager,  accelerometer);
-//                                new Thread(AccelerometerRunnable).start();
-//
-//                            }
-//                            if(listenToGyroscope){
-//                                SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager,  gyroscope);
-//                                new Thread(GyroscopeRunnable).start();
-//
-//                            }
-//                            if(listenToGravity){
-//                                SensorRunnable GravityRunnable = new SensorRunnable(sensorManager,  gravity);
-//                                new Thread(GravityRunnable).start();
-//
-//                            }
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -658,5 +514,49 @@ public class SensorService extends Service {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    public void registerUserToProject(final String userid, final String projectId){
+
+        String ip = getResources().getString(R.string.IP);
+        String url=ip+"api/addUsersToPosts";
+        StringRequest request= new StringRequest(com.android.volley.Request.Method.POST, url_login,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject responseObject=new JSONObject(response);
+                            String message=responseObject.getString("message");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(SensorService.this,"project update error"+e.toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(SensorService.this,"project update error"+error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params=new HashMap<>();
+                params.put("userId",userid);
+                params.put("projectId",projectId);
+                return params;
+            }
+            @Override
+            protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
+                mStatusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+
     }
 }
