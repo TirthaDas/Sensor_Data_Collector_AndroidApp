@@ -101,10 +101,18 @@ public class SensorService extends Service {
         String input = intent.getStringExtra("sensors");
          String projectId=intent.getStringExtra("projectId");
         String[] Sensors = input.split("\\r?\\n");
-
+            listenToGameRotationVector=false;
+            listenToProximity=false;
+            listenToGravity=false;
+            listenToLight=false;
+            listenToTemperature=false;
+            listenToMagnetic=false;
+            listenToGyroscope=false;
+            listenT0Aaccelerometer=false;
         // set which sensors to listen to as true.
+        Log.d(TAG, "PROJECTID====================================>>>>>>"+projectId);
         for (int x = 0; x < Sensors.length; x++) {
-            Log.d(TAG, "first sensor: " + Sensors[x]);
+            Log.d(TAG, "SENSOR LIST====================================================>>>>>>>>>> " + Sensors[x]);
             switch (Sensors[x]) {
                 case "accelerometer":
                     listenT0Aaccelerometer=true;
@@ -285,9 +293,9 @@ public class SensorService extends Service {
             String SensorType=sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.')+1);
             switch (SensorType){
                 case "accelerometer":
-                    Log.d(TAG, "onSensorChanged: AACELEROMETER _X-AXIS" + sensorEvent.values[0]);
-                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Y-AXIS" + sensorEvent.values[1]);
-                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Z-AXIS" + sensorEvent.values[2]);
+//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _X-AXIS" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Y-AXIS" + sensorEvent.values[1]);
+//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Z-AXIS" + sensorEvent.values[2]);
                     long accelerometerTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         accelerometerWriter = new FileWriter(sensorFile, true);
@@ -300,9 +308,9 @@ public class SensorService extends Service {
 
                     break;
                 case "gyroscope":
-                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the x axis" + sensorEvent.values[0]);
-                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the y axis" + sensorEvent.values[1]);
-                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the z axis" + sensorEvent.values[2]);
+//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the x axis" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the y axis" + sensorEvent.values[1]);
+//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the z axis" + sensorEvent.values[2]);
                     long gyroscopeTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gyroscopeWriter = new FileWriter(sensorFile, true);
@@ -315,9 +323,9 @@ public class SensorService extends Service {
 
                     break;
                 case "magnetic_field":
-                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_X-AXIS" + sensorEvent.values[0]);
-                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Y-AXIS" + sensorEvent.values[1]);
-                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Z-AXIS" + sensorEvent.values[2]);
+//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_X-AXIS" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Y-AXIS" + sensorEvent.values[1]);
+//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Z-AXIS" + sensorEvent.values[2]);
                     long magnetic_fieldTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         magneticWriter = new FileWriter(sensorFile, true);
@@ -330,7 +338,7 @@ public class SensorService extends Service {
 
                     break;
                 case "ambient_temperature":
-                    Log.d(TAG, "onSensorChanged: AMBIENT_TEMPERATURE-------Ambient air temperature."  + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: AMBIENT_TEMPERATURE-------Ambient air temperature."  + sensorEvent.values[0]);
                     long ambient_temperatureTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         temperatureWriter = new FileWriter(sensorFile, true);
@@ -343,7 +351,7 @@ public class SensorService extends Service {
 
                     break;
                 case "light":
-                    Log.d(TAG, "onSensorChanged: LIGHT illuminance" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: LIGHT illuminance" + sensorEvent.values[0]);
                     long lightTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         lightWriter = new FileWriter(sensorFile, true);
@@ -356,9 +364,9 @@ public class SensorService extends Service {
 
                     break;
                 case "gravity":
-                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the x axis" + sensorEvent.values[0]);
-                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the y axis" + sensorEvent.values[1]);
-                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the z axis" + sensorEvent.values[2]);
+//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the x axis" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the y axis" + sensorEvent.values[1]);
+//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the z axis" + sensorEvent.values[2]);
                     long gravityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gravityWriter = new FileWriter(sensorFile, true);
@@ -372,7 +380,7 @@ public class SensorService extends Service {
 
                     break;
                 case "proximity":
-                    Log.d(TAG, "onSensorChanged: PROXIMITY---------Distance from object" + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: PROXIMITY---------Distance from object" + sensorEvent.values[0]);
                     long proximityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         proximityWriter = new FileWriter(sensorFile, true);
@@ -384,9 +392,9 @@ public class SensorService extends Service {
                     }
                     break;
                 case "game_rotation_vector":
-                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the x axis " + sensorEvent.values[0]);
-                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the y axis " + sensorEvent.values[1]);
-                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the z axis " + sensorEvent.values[2]);
+//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the x axis " + sensorEvent.values[0]);
+//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the y axis " + sensorEvent.values[1]);
+//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the z axis " + sensorEvent.values[2]);
                     long game_rotation_vectorTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gameRotationVectorWriter = new FileWriter(sensorFile, true);
@@ -432,7 +440,7 @@ public class SensorService extends Service {
 
                         @Override
                         public void onTick(long l) {
-                            Log.d(TAG, "onTick: CLOCK TICK" + l);
+//                            Log.d(TAG, "onTick: CLOCK TICK" + l);
                             sensorThreadHandler.post(new Runnable() {
                                 @Override
                                 public void run() {

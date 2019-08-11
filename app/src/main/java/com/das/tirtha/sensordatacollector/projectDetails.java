@@ -100,7 +100,7 @@ public class projectDetails extends AppCompatActivity {
                             stringBuilder.append(sensorsListAdapter.getSelected().get(i).getType());
                             stringBuilder.append("\n");
                         }
-                        showToast(stringBuilder.toString());
+//                        showToast(stringBuilder.toString());
 
                         //call the service
 
@@ -108,6 +108,8 @@ public class projectDetails extends AppCompatActivity {
                         serviceIntent.putExtra("sensors",stringBuilder.toString());
                         serviceIntent.putExtra("projectId",data[2]);
                         startService(serviceIntent);
+                        Intent AvailableProjectsIntent= new Intent(projectDetails.this,MainActivity.class);
+                        startActivity(AvailableProjectsIntent);
                     } else {
                         showToast("No Selection");
                     }
