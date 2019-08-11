@@ -520,7 +520,7 @@ public class SensorService extends Service {
 
         String ip = getResources().getString(R.string.IP);
         String url=ip+"api/addUsersToPosts";
-        StringRequest request= new StringRequest(com.android.volley.Request.Method.POST, url_login,
+        StringRequest request= new StringRequest(com.android.volley.Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
