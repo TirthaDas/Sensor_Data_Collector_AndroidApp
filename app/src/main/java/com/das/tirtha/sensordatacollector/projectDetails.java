@@ -66,14 +66,6 @@ public class projectDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-//        project_detail_title.setText(data[0]);
-//        project_detail_description.setText(data[1]);
-
-//        project_detail_description.setText(sense.get(0).toString());
-
-//        Toast.makeText(projectDetails.this,"hello  there "+data[0]+data[1],Toast.LENGTH_SHORT).show();
-
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         sensorsListAdapter = new SensorsListAdapter(this, SensorList);
@@ -147,7 +139,7 @@ public class projectDetails extends AppCompatActivity {
                 data[1] = projectDescription;
                 data[2]=projectId;
                 ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
-                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
 
             }
         } else {

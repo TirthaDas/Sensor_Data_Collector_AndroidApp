@@ -152,7 +152,7 @@ public class SensorService extends Service {
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, ChannelId)
                 .setContentTitle("Sensor Data Collector is ON")
-                .setContentText(input)
+                .setContentText("This app is collecting sensor data in the background")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentIntent(pendingIntent)
                 .build();
