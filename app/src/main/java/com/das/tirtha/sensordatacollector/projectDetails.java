@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -37,6 +38,8 @@ public class projectDetails extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionMode actionMode;
     private Button startProject;
+    private SharedPreferences sp;
+
     private int STORAGE_PERMISSION_CODE = 1;
     String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -92,23 +95,62 @@ public class projectDetails extends AppCompatActivity {
                             stringBuilder.append(sensorsListAdapter.getSelected().get(i).getType());
                             stringBuilder.append("\n");
                         }
-//                        showToast(stringBuilder.toString());
+                        //  showToast(stringBuilder.toString());
+                        //see which number project it is
+                        sp = getSharedPreferences("login", MODE_PRIVATE);
+                        int myIntValue_active_projects = sp.getInt("active_projects", -1);
+                        Log.d("0000000909090009", "ACTIVE PROJECTSSS: "+myIntValue_active_projects);
 
-                        //call the service
+                        //call the relevant service
 
-                        Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
-                        serviceIntent.putExtra("sensors",stringBuilder.toString());
-                        serviceIntent.putExtra("projectId",data[2]);
-                        startService(serviceIntent);
+                        switch (myIntValue_active_projects){
+                            case 0:
+                                SharedPreferences.Editor editor= sp.edit();
+                                editor.putInt("active_projects",1).apply();
+                                Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
+                                serviceIntent.putExtra("sensors",stringBuilder.toString());
+                                serviceIntent.putExtra("projectId",data[2]);
+                                startService(serviceIntent);
+
+                                break;
+
+                            case 1:
+                                Log.d("casee1", "onClick: CASE 1"+sp.getInt("active_projects",0));
+
+                                Intent serviceIntent2= new Intent(projectDetails.this,SensorServiceSecondProject.class);
+                                serviceIntent2.putExtra("sensors",stringBuilder.toString());
+                                serviceIntent2.putExtra("projectId",data[2]);
+                                startService(serviceIntent2);
+                                SharedPreferences.Editor editor1= sp.edit();
+                                editor1.putInt("active_projects",2).apply();
+                                Log.d("casee12333", "onClick: CASE 1"+sp.getInt("active_projects",0));
+
+                                break;
+
+                            case 2:
+                                Log.d("casee2<<<<", "onClick: CASE 1"+sp.getInt("active_projects",0));
+
+                                SharedPreferences.Editor editor2= sp.edit();
+                                editor2.putInt("active_projects",3).apply();
+                                Intent serviceIntent3= new Intent(projectDetails.this,SensorServiceThirdProject.class);
+                                serviceIntent3.putExtra("sensors",stringBuilder.toString());
+                                serviceIntent3.putExtra("projectId",data[2]);
+                                startService(serviceIntent3);
+
+                                break;
+                                default:
+                                    showToast("maximum number of projects already running");
+                        }
+//                        Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
+//                        serviceIntent.putExtra("sensors",stringBuilder.toString());
+//                        serviceIntent.putExtra("projectId",data[2]);
+//                        startService(serviceIntent);
                         Intent AvailableProjectsIntent= new Intent(projectDetails.this,MainActivity.class);
                         startActivity(AvailableProjectsIntent);
                     } else {
                         showToast("No Selection");
                     }
                 }
-
-
-
             }
         });
 
@@ -169,7 +211,7 @@ public class projectDetails extends AppCompatActivity {
         String searchKey = sensorList.get(h);
         for (int x = 0; x < sensors.size(); x++) {
             String TAG = "hey ";
-            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
+//            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
             if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase()) ){
                 Sensors sensor = new Sensors();
                 sensor.setName(sensors.get(x).getName());

@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // get the shared preference instance
         sp = getSharedPreferences("login",MODE_PRIVATE);
+//        SharedPreferences.Editor editor=sp.edit();
+
+//        editor.putInt("active_projects",1).apply();
+
 
         // set up toolbar
         setSupportActionBar(toolbar);

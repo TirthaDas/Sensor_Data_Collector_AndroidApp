@@ -35,8 +35,10 @@ public class available_projects extends Fragment {
     private ArrayList<projectData> mprojectList;
     private RequestQueue requestQueue;
     private Toolbar toolbar;
-    private SharedPreferences sp;
+//    private SharedPreferences sp;
     private static final  String TAG="Project Request Test";
+    private SharedPreferences sp;
+
 
 
 
@@ -52,6 +54,7 @@ public class available_projects extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Available Projects");
 //        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         sp =  (getActivity()).getSharedPreferences("login", MODE_PRIVATE);
+
 
         getProjectsList();
 
@@ -69,6 +72,7 @@ public class available_projects extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            int actiiveProjectCount=0;
                             Log.d(TAG, "onResponse: hhheeelooo abcd");
                             JSONArray projects= response.getJSONArray("posts");
                             label:
@@ -99,15 +103,21 @@ public class available_projects extends Fragment {
                                 }
 
                                 for(int a=0;a<activeUsersList.size();a++){
+
                                     Log.d(TAG, "------------------: "+userid+activeUsersList.get(a));
 
                                     if(activeUsersList.get(a).equals(userid)){
                                         Log.d(TAG, "++++++++++++++++: "+userid+activeUsersList.get(a));
+                                        actiiveProjectCount++;
+
                                         continue label;
                                     }
                                 }
                                 mprojectList.add(new projectData(id,projectTitle,projectDesciption,listdata));
                             }
+                            sp = (getActivity()).getSharedPreferences("login",MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sp.edit();
+                            editor.putInt("active_projects",actiiveProjectCount).apply();
                             mprojectsAdapter=new projectsAdapter(getActivity(),mprojectList);
                             mrecyclerView.setAdapter(mprojectsAdapter);
                         } catch (JSONException e) {

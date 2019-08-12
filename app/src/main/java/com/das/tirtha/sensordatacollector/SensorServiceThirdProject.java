@@ -10,7 +10,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
@@ -18,22 +17,17 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.AtomicFile;
 import android.util.Log;
-import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,17 +36,12 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -61,10 +50,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.das.tirtha.sensordatacollector.NotificaltionChannel.Channel3Id;
 import static com.das.tirtha.sensordatacollector.NotificaltionChannel.ChannelId;
 
 
-public class SensorService extends Service {
+public class SensorServiceThirdProject extends Service {
     private SensorManager sensorManager;
     private Handler mainHandler = new Handler();
     Sensor sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector;
@@ -155,13 +145,13 @@ public class SensorService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, ChannelId)
+        Notification notification = new NotificationCompat.Builder(this, Channel3Id)
                 .setContentTitle("Sensor Data Collector is ON")
-                .setContentText("This app is collecting sensor data in the background for the first project")
+                .setContentText("This app is collecting 3rd project")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(1, notification);
+        startForeground(3, notification);
 
         registerUserToProject(sp.getString("UserId", "noUsr"),projectId);
 
@@ -193,17 +183,17 @@ public class SensorService extends Service {
         }
         if(listenToLight)
         {
-//            for(;;){
-//                ExecutorService service= Executors.newFixedThreadPool(1);
-//                service.execute(new SensorRunnable(sensorManager,  light,projectId));
-//            }
+
             SensorRunnable LightRunnable = new SensorRunnable(sensorManager,  light,projectId);
             new Thread(LightRunnable).start();
 
         }
-        if(listenToGameRotationVector){
+        if(listenToGameRotationVector)
+        {
+
             SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager,  gameRotationVector,projectId);
             new Thread(GameRotationVectorRunnable).start();
+
         }
         if(listenT0Aaccelerometer){
                 SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager, accelerometer, projectId);
@@ -212,21 +202,16 @@ public class SensorService extends Service {
                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT99999999999999^^^^^^^^^^^^^^^: "+Thread.activeCount());
         }
         if(listenToGyroscope){
-
             SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager,  gyroscope,projectId);
             new Thread(GyroscopeRunnable).start();
 
         }
         if(listenToGravity){
-
             SensorRunnable GravityRunnable = new SensorRunnable(sensorManager,  gravity,projectId);
             new Thread(GravityRunnable).start();
 
         }
         Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT^^^^^^^^^^^^^^^: "+Thread.activeCount());
-
-
-
     }
 
     public void stopThread() {
@@ -235,7 +220,6 @@ public class SensorService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy: second service destoy");
         super.onDestroy();
     }
 
@@ -273,7 +257,6 @@ public class SensorService extends Service {
 
         @Override
         public void run() {
-
                     Looper.prepare();
                     sensorThreadLooper = Looper.myLooper();
                     sensorThreadHandler = new Handler();
@@ -298,25 +281,16 @@ public class SensorService extends Service {
                     Looper.loop();
 
 
-
-
         }
-
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (!mIsSensorUpdateEnabled) {
                 stopListeningToSensor();
                 return;
             }
-//            Log.d(TAG, "onSensorChanged: " + "x value" + sensorEvent.values[0] + "\n" + "y value" + sensorEvent.values[1] + "\n" + "z value" + sensorEvent.values[2]);
-//            Log.d(TAG, "onSensorChanged: sensor name" + sensorEvent.sensor.getName());
-//            Log.d(TAG, "onSensorChanged: sensor type" + sensorEvent.sensor.getStringType());
             String SensorType=sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.')+1);
             switch (SensorType){
                 case "accelerometer":
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _X-AXIS" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Y-AXIS" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Z-AXIS" + sensorEvent.values[2]);
                     long accelerometerTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         accelerometerWriter = new FileWriter(sensorFile, true);
@@ -329,9 +303,6 @@ public class SensorService extends Service {
 
                     break;
                 case "gyroscope":
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the x axis" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the y axis" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the z axis" + sensorEvent.values[2]);
                     long gyroscopeTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gyroscopeWriter = new FileWriter(sensorFile, true);
@@ -344,9 +315,6 @@ public class SensorService extends Service {
 
                     break;
                 case "magnetic_field":
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_X-AXIS" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Y-AXIS" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Z-AXIS" + sensorEvent.values[2]);
                     long magnetic_fieldTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         magneticWriter = new FileWriter(sensorFile, true);
@@ -359,7 +327,6 @@ public class SensorService extends Service {
 
                     break;
                 case "ambient_temperature":
-//                    Log.d(TAG, "onSensorChanged: AMBIENT_TEMPERATURE-------Ambient air temperature."  + sensorEvent.values[0]);
                     long ambient_temperatureTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         temperatureWriter = new FileWriter(sensorFile, true);
@@ -372,7 +339,6 @@ public class SensorService extends Service {
 
                     break;
                 case "light":
-//                    Log.d(TAG, "onSensorChanged: LIGHT illuminance" + sensorEvent.values[0]);
                     long lightTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         lightWriter = new FileWriter(sensorFile, true);
@@ -385,9 +351,6 @@ public class SensorService extends Service {
 
                     break;
                 case "gravity":
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the x axis" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the y axis" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the z axis" + sensorEvent.values[2]);
                     long gravityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gravityWriter = new FileWriter(sensorFile, true);
@@ -401,7 +364,6 @@ public class SensorService extends Service {
 
                     break;
                 case "proximity":
-//                    Log.d(TAG, "onSensorChanged: PROXIMITY---------Distance from object" + sensorEvent.values[0]);
                     long proximityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         proximityWriter = new FileWriter(sensorFile, true);
@@ -413,9 +375,6 @@ public class SensorService extends Service {
                     }
                     break;
                 case "game_rotation_vector":
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the x axis " + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the y axis " + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the z axis " + sensorEvent.values[2]);
                     long game_rotation_vectorTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gameRotationVectorWriter = new FileWriter(sensorFile, true);
@@ -465,7 +424,8 @@ public class SensorService extends Service {
                             sensorThreadHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-
+//                                    Thread.currentThread().interrupt();
+//                                    return;
                                 }
                             });
 
@@ -493,7 +453,6 @@ public class SensorService extends Service {
             Thread DataUpload = new Thread(new Runnable() {
                 @Override
                 public void run() {
-
 
                         String filePath = sensorFile.getPath();
                         String content_type = getContentType(filePath);
@@ -529,14 +488,11 @@ public class SensorService extends Service {
                                 Thread b = new Thread(sensorRunnable);
                                 b.start();
                                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
-//                                Thread.currentThread().interrupt();
-//                                return;
 
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
-
+                    }
                 }
             });
             DataUpload.start();
@@ -567,13 +523,13 @@ public class SensorService extends Service {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(SensorService.this,"project update error"+e.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SensorServiceThirdProject.this,"project update error"+e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SensorService.this,"project update error"+error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(SensorServiceThirdProject.this,"project update error"+error.toString(),Toast.LENGTH_SHORT).show();
             }
         })
         {
