@@ -103,50 +103,52 @@ public class projectDetails extends AppCompatActivity {
 
                         //call the relevant service
 
-                        switch (myIntValue_active_projects){
-                            case 0:
-                                SharedPreferences.Editor editor= sp.edit();
-                                editor.putInt("active_projects",1).apply();
-                                Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
-                                serviceIntent.putExtra("sensors",stringBuilder.toString());
-                                serviceIntent.putExtra("projectId",data[2]);
-                                startService(serviceIntent);
+//                        switch (myIntValue_active_projects){
+//                            case 0:
+//                                SharedPreferences.Editor editor= sp.edit();
+//                                editor.putInt("active_projects",1).apply();
+//                                Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
+//                                serviceIntent.putExtra("sensors",stringBuilder.toString());
+//                                serviceIntent.putExtra("projectId",data[2]);
+//                                startService(serviceIntent);
+//
+//                                break;
+//
+//                            case 1:
+//                                Log.d("casee1", "onClick: CASE 1"+sp.getInt("active_projects",0));
+//
+//                                Intent serviceIntent2= new Intent(projectDetails.this,SensorServiceSecondProject.class);
+//                                serviceIntent2.putExtra("sensors",stringBuilder.toString());
+//                                serviceIntent2.putExtra("projectId",data[2]);
+//                                startService(serviceIntent2);
+//                                SharedPreferences.Editor editor1= sp.edit();
+//                                editor1.putInt("active_projects",2).apply();
+//                                Log.d("casee12333", "onClick: CASE 1"+sp.getInt("active_projects",0));
+//
+//                                break;
+//
+//                            case 2:
+//                                Log.d("casee2<<<<", "onClick: CASE 1"+sp.getInt("active_projects",0));
+//
+//                                SharedPreferences.Editor editor2= sp.edit();
+//                                editor2.putInt("active_projects",3).apply();
+//                                Intent serviceIntent3= new Intent(projectDetails.this,SensorServiceThirdProject.class);
+//                                serviceIntent3.putExtra("sensors",stringBuilder.toString());
+//                                serviceIntent3.putExtra("projectId",data[2]);
+//                                startService(serviceIntent3);
+//
+//                                break;
+//                                default:
+//                                    showToast("maximum number of projects already running");
+//                        }
 
-                                break;
-
-                            case 1:
-                                Log.d("casee1", "onClick: CASE 1"+sp.getInt("active_projects",0));
-
-                                Intent serviceIntent2= new Intent(projectDetails.this,SensorServiceSecondProject.class);
-                                serviceIntent2.putExtra("sensors",stringBuilder.toString());
-                                serviceIntent2.putExtra("projectId",data[2]);
-                                startService(serviceIntent2);
-                                SharedPreferences.Editor editor1= sp.edit();
-                                editor1.putInt("active_projects",2).apply();
-                                Log.d("casee12333", "onClick: CASE 1"+sp.getInt("active_projects",0));
-
-                                break;
-
-                            case 2:
-                                Log.d("casee2<<<<", "onClick: CASE 1"+sp.getInt("active_projects",0));
-
-                                SharedPreferences.Editor editor2= sp.edit();
-                                editor2.putInt("active_projects",3).apply();
-                                Intent serviceIntent3= new Intent(projectDetails.this,SensorServiceThirdProject.class);
-                                serviceIntent3.putExtra("sensors",stringBuilder.toString());
-                                serviceIntent3.putExtra("projectId",data[2]);
-                                startService(serviceIntent3);
-
-                                break;
-                                default:
-                                    showToast("maximum number of projects already running");
-                        }
-//                        Intent serviceIntent= new Intent(projectDetails.this,SensorService.class);
-//                        serviceIntent.putExtra("sensors",stringBuilder.toString());
-//                        serviceIntent.putExtra("projectId",data[2]);
-//                        startService(serviceIntent);
                         Intent AvailableProjectsIntent= new Intent(projectDetails.this,MainActivity.class);
                         startActivity(AvailableProjectsIntent);
+
+
+                        ServiceHelper serviceHelper = new ServiceHelper(data[2],stringBuilder.toString(),myIntValue_active_projects,projectDetails.this);
+                        serviceHelper.startService();
+
                     } else {
                         showToast("No Selection");
                     }

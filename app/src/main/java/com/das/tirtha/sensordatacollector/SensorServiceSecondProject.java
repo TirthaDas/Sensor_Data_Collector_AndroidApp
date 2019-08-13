@@ -186,6 +186,7 @@ public class SensorServiceSecondProject extends Service {
             SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager,  temperature,projectId);
             new Thread(TemperatureRunnable).start();
 
+
         }
         if(listenToLight)
         {
@@ -233,7 +234,7 @@ public class SensorServiceSecondProject extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "222222onDestroy: second service destoy");
-
+//        new SensorRunnable(sensorManager,sensor1,"").stopRunning();
         super.onDestroy();
     }
 
@@ -271,32 +272,35 @@ public class SensorServiceSecondProject extends Service {
 
         @Override
         public void run() {
+            while (!exit) {
+                Looper.prepare();
+                sensorThreadLooper = Looper.myLooper();
+                sensorThreadHandler = new Handler();
+                String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
+                Log.d(TAG, "run: dateeee" + date);
 
-                    Looper.prepare();
-                    sensorThreadLooper = Looper.myLooper();
-                    sensorThreadHandler = new Handler();
-                    String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
-                    Log.d(TAG, "run: dateeee" + date);
+                try {
+                    File dir = new File(fullPath);
+                    sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
 
-                    try {
-                        File dir = new File(fullPath);
-                        sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
-
-                        if (!dir.exists()) {
-                            dir.mkdirs();
-                        }
-                    } catch (Exception e) {
-                        Log.w("creating file error", e.toString());
+                    if (!dir.exists()) {
+                        dir.mkdirs();
                     }
-                    startListeningToSensor(Sensor123, projectId);
+                } catch (Exception e) {
+                    Log.w("creating file error", e.toString());
+                }
+                startListeningToSensor(Sensor123, projectId);
 
-                    Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
+                Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
 
-                    Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: "+Thread.activeCount());
-                    Looper.loop();
-
+                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
+                Looper.loop();
+            }
         }
-
+        public void stopRunning()
+        {
+            exit = true;
+        }
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (!mIsSensorUpdateEnabled) {
@@ -502,9 +506,9 @@ public class SensorServiceSecondProject extends Service {
                                 Log.d(TAG, "is the file deleted or not " + deleted);
 
 //                            start the thread again
-                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
-                                Thread b = new Thread(sensorRunnable);
-                                b.start();
+//                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
+//                                Thread b = new Thread(sensorRunnable);
+//                                b.start();
                                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
 
                             }

@@ -273,50 +273,55 @@ public class SensorService extends Service {
 
         @Override
         public void run() {
+            Log.d(TAG, "VALUE OF EXIT in the START"+exit);
 
+            while (!exit) {
+                Log.d(TAG, "VALUE OF EXIT in the WHILE BEGNG"+exit);
+
+
+                if (Looper.myLooper()==null)
                     Looper.prepare();
-                    sensorThreadLooper = Looper.myLooper();
-                    sensorThreadHandler = new Handler();
-                    String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
-                    Log.d(TAG, "run: dateeee" + date);
+            sensorThreadHandler = new Handler();
+            String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
+            Log.d(TAG, "run: dateeee" + date);
 
-                    try {
-                        File dir = new File(fullPath);
-                        sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
+            try {
+                File dir = new File(fullPath);
+                sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
 
-                        if (!dir.exists()) {
-                            dir.mkdirs();
-                        }
-                    } catch (Exception e) {
-                        Log.w("creating file error", e.toString());
-                    }
-                    startListeningToSensor(Sensor123, projectId);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+            } catch (Exception e) {
+                Log.w("creating file error", e.toString());
+            }
+            startListeningToSensor(Sensor123, projectId);
 
-                    Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
+            Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
 
-                    Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: "+Thread.activeCount());
-                    Looper.loop();
+            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
 
+                Log.d(TAG, "VALUE OF EXIT in the END"+exit);
+
+                Looper.loop();
 
 
 
         }
-
+        }
+        public void stopRunning()
+        {
+          exit = true;
+        }
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (!mIsSensorUpdateEnabled) {
                 stopListeningToSensor();
                 return;
             }
-//            Log.d(TAG, "onSensorChanged: " + "x value" + sensorEvent.values[0] + "\n" + "y value" + sensorEvent.values[1] + "\n" + "z value" + sensorEvent.values[2]);
-//            Log.d(TAG, "onSensorChanged: sensor name" + sensorEvent.sensor.getName());
-//            Log.d(TAG, "onSensorChanged: sensor type" + sensorEvent.sensor.getStringType());
             String SensorType=sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.')+1);
             switch (SensorType){
                 case "accelerometer":
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _X-AXIS" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Y-AXIS" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: AACELEROMETER _Z-AXIS" + sensorEvent.values[2]);
                     long accelerometerTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         accelerometerWriter = new FileWriter(sensorFile, true);
@@ -329,9 +334,6 @@ public class SensorService extends Service {
 
                     break;
                 case "gyroscope":
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the x axis" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the y axis" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GYROSCOPE--- Rate of rotation around the z axis" + sensorEvent.values[2]);
                     long gyroscopeTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gyroscopeWriter = new FileWriter(sensorFile, true);
@@ -344,9 +346,6 @@ public class SensorService extends Service {
 
                     break;
                 case "magnetic_field":
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_X-AXIS" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Y-AXIS" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: MAGNETIC_FIELD_Z-AXIS" + sensorEvent.values[2]);
                     long magnetic_fieldTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         magneticWriter = new FileWriter(sensorFile, true);
@@ -359,7 +358,6 @@ public class SensorService extends Service {
 
                     break;
                 case "ambient_temperature":
-//                    Log.d(TAG, "onSensorChanged: AMBIENT_TEMPERATURE-------Ambient air temperature."  + sensorEvent.values[0]);
                     long ambient_temperatureTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         temperatureWriter = new FileWriter(sensorFile, true);
@@ -372,7 +370,6 @@ public class SensorService extends Service {
 
                     break;
                 case "light":
-//                    Log.d(TAG, "onSensorChanged: LIGHT illuminance" + sensorEvent.values[0]);
                     long lightTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         lightWriter = new FileWriter(sensorFile, true);
@@ -385,9 +382,6 @@ public class SensorService extends Service {
 
                     break;
                 case "gravity":
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the x axis" + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the y axis" + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GRAVITY_ Force of gravity along the z axis" + sensorEvent.values[2]);
                     long gravityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gravityWriter = new FileWriter(sensorFile, true);
@@ -401,7 +395,6 @@ public class SensorService extends Service {
 
                     break;
                 case "proximity":
-//                    Log.d(TAG, "onSensorChanged: PROXIMITY---------Distance from object" + sensorEvent.values[0]);
                     long proximityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         proximityWriter = new FileWriter(sensorFile, true);
@@ -413,9 +406,6 @@ public class SensorService extends Service {
                     }
                     break;
                 case "game_rotation_vector":
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the x axis " + sensorEvent.values[0]);
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the y axis " + sensorEvent.values[1]);
-//                    Log.d(TAG, "onSensorChanged: GAME_ROTATION_VECTOR ____ Rotation vector component along the z axis " + sensorEvent.values[2]);
                     long game_rotation_vectorTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gameRotationVectorWriter = new FileWriter(sensorFile, true);
@@ -443,7 +433,10 @@ public class SensorService extends Service {
         }
 
         public void startListeningToSensor(Sensor Sensor123, String projectId ) {
+            Log.d(TAG, "START LISTENING TO SENSOR CALLED");
             sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
+            Log.d(TAG, "SENSOR LINTENERS ARE REGISTERED"+exit);
+
             mIsSensorUpdateEnabled = true;
             startTimer(projectId);
         }
@@ -454,6 +447,7 @@ public class SensorService extends Service {
         }
 
         public void startTimer(final String projectId) {
+
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -461,7 +455,7 @@ public class SensorService extends Service {
 
                         @Override
                         public void onTick(long l) {
-//                            Log.d(TAG, "onTick: CLOCK TICK" + l);
+                            Log.d(TAG, "onTick: CLOCK TICK" + l);
                             sensorThreadHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -525,9 +519,11 @@ public class SensorService extends Service {
                                 Log.d(TAG, "is the file deleted or not " + deleted);
 
 //                            start the thread again
-                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
-                                Thread b = new Thread(sensorRunnable);
-                                b.start();
+//                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
+//                                Thread b = new Thread(sensorRunnable);
+//                                b.start();
+                                sensorThreadHandler.post(new SensorRunnable(sensorManager,Sensor123,projectId));
+
                                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
 //                                Thread.currentThread().interrupt();
 //                                return;
