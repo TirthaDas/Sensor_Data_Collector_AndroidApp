@@ -3,8 +3,10 @@ package com.das.tirtha.sensordatacollector;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -64,6 +66,8 @@ public class SensorServiceSecondProject extends Service {
     private boolean listenT0Aaccelerometer, listenToGyroscope, listenToLight, listenToMagnetic, listenToGravity, listenToTemperature, listenToProximity, listenToGameRotationVector;
     private RequestQueue requestQueue;
     private int mStatusCode;
+    public volatile boolean stopRunnig1;
+
 
 
     @Override
@@ -144,7 +148,9 @@ public class SensorServiceSecondProject extends Service {
 
         Log.d(TAG, "ALL THAT ARE TRUE: "+listenT0Aaccelerometer+ listenToGyroscope+ listenToLight+ listenToMagnetic+ listenToGravity+ listenToTemperature+listenToProximity+ listenToGameRotationVector);
 
-
+        // register broadcast receiver here
+        IntentFilter intentFilter=new IntentFilter("com.das.tirtha.sensordatacollectorSecondservice");
+        registerReceiver(broadcastReceiver2,intentFilter);
         // start notification here.
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -235,6 +241,9 @@ public class SensorServiceSecondProject extends Service {
     public void onDestroy() {
         Log.d(TAG, "222222onDestroy: second service destoy");
 //        new SensorRunnable(sensorManager,sensor1,"").stopRunning();
+        stopRunnig1 = true;
+        stopThread();
+        unregisterReceiver(broadcastReceiver2);
         super.onDestroy();
     }
 
@@ -272,9 +281,10 @@ public class SensorServiceSecondProject extends Service {
 
         @Override
         public void run() {
-                Looper.prepare();
-                sensorThreadLooper = Looper.myLooper();
-                sensorThreadHandler = new Handler();
+//                Looper.prepare();
+//                sensorThreadLooper = Looper.myLooper();
+//                sensorThreadHandler = new Handler();
+            if(!stopRunnig1) {
                 String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
                 Log.d(TAG, "run: dateeee" + date);
 
@@ -289,11 +299,8 @@ public class SensorServiceSecondProject extends Service {
                     Log.w("creating file error", e.toString());
                 }
                 startListeningToSensor(Sensor123, projectId);
-
-//                Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
-
-//                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
-                Looper.loop();
+            }
+//                Looper.loop();
 
         }
         public void stopRunning()
@@ -436,15 +443,9 @@ public class SensorServiceSecondProject extends Service {
                 @Override
                 public void run() {
                     new CountDownTimer(30000, 1000) {
-
                         @Override
                         public void onTick(long l) {
-//                            Log.d(TAG, "onTick: CLOCK TICK" + l);
-                            sensorThreadHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                }
-                            });
+                            Log.d(TAG, "onTick: CLOCK TICK" + l);
 
                         }
 
@@ -506,6 +507,10 @@ public class SensorServiceSecondProject extends Service {
                                 Thread b = new Thread(sensorRunnable);
                                 b.start();
                                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
+                                Intent intent=new Intent("com.das.tirtha.sensordatacollectorSecondservice");
+                                intent.putExtra("com.das.tirtha.sensor2",Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".")+1));
+                                intent.putExtra("com.das.tirtha.projectId",projectId);
+                                sendBroadcast(intent);
 
                             }
                         } catch (IOException e) {
@@ -570,4 +575,44 @@ public class SensorServiceSecondProject extends Service {
         requestQueue.add(request);
 
     }
+    public BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String recieved=intent.getStringExtra("com.das.tirtha.sensor2");
+            String projectId=intent.getStringExtra("com.das.tirtha.projectId");
+            if(recieved.equals("accelerometer")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, accelerometer, projectId);
+                Thread b = new Thread(sensorRunnable);
+                b.start();
+            }
+            if(recieved.equals("gyroscope")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, gyroscope, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("magnetic_field")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, magnetic, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("ambient_temperature")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, temperature, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("light")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, light, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("gravity")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, gravity, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("proximity")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, proximity, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if(recieved.equals("game_rotation_vector")){
+                SensorServiceSecondProject.SensorRunnable sensorRunnable = new SensorServiceSecondProject.SensorRunnable(sensorManager, gameRotationVector, projectId);
+                new Thread(sensorRunnable).start();
+            }
+        }
+    };
 }

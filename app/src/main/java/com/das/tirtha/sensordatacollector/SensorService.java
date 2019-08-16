@@ -152,7 +152,7 @@ public class SensorService extends Service {
         Log.d(TAG, "ALL THAT ARE TRUE: " + listenT0Aaccelerometer + listenToGyroscope + listenToLight + listenToMagnetic + listenToGravity + listenToTemperature + listenToProximity + listenToGameRotationVector);
 
 
-        //broadcast reciever here
+        // register broadcast receiver here
         IntentFilter intentFilter=new IntentFilter("com.das.tirtha.sensordatacollector");
         registerReceiver(broadcastReceiver,intentFilter);
 
@@ -605,8 +605,6 @@ public class SensorService extends Service {
         public void onReceive(Context context, Intent intent) {
             String recieved=intent.getStringExtra("com.das.tirtha.sensor");
             String projectId=intent.getStringExtra("com.das.tirtha.projectId");
-
-
             if(recieved.equals("accelerometer")){
                 SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, accelerometer, projectId);
                             Thread b = new Thread(sensorRunnable);
@@ -640,7 +638,6 @@ public class SensorService extends Service {
                 SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, gameRotationVector, projectId);
                 new Thread(sensorRunnable).start();
             }
-
         }
     };
 

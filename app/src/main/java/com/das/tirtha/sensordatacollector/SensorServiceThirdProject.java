@@ -3,8 +3,10 @@ package com.das.tirtha.sensordatacollector;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -64,6 +66,7 @@ public class SensorServiceThirdProject extends Service {
     private boolean listenT0Aaccelerometer, listenToGyroscope, listenToLight, listenToMagnetic, listenToGravity, listenToTemperature, listenToProximity, listenToGameRotationVector;
     private RequestQueue requestQueue;
     private int mStatusCode;
+    public volatile boolean stopRunnig1;
 
 
     @Override
@@ -87,60 +90,60 @@ public class SensorServiceThirdProject extends Service {
         sp = getSharedPreferences("login", MODE_PRIVATE);
 
 
-
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String input = intent.getStringExtra("sensors");
-         String projectId=intent.getStringExtra("projectId");
+        String projectId = intent.getStringExtra("projectId");
         String[] Sensors = input.split("\\r?\\n");
-            listenToGameRotationVector=false;
-            listenToProximity=false;
-            listenToGravity=false;
-            listenToLight=false;
-            listenToTemperature=false;
-            listenToMagnetic=false;
-            listenToGyroscope=false;
-            listenT0Aaccelerometer=false;
+        listenToGameRotationVector = false;
+        listenToProximity = false;
+        listenToGravity = false;
+        listenToLight = false;
+        listenToTemperature = false;
+        listenToMagnetic = false;
+        listenToGyroscope = false;
+        listenT0Aaccelerometer = false;
         // set which sensors to listen to as true.
-        Log.d(TAG, "PROJECTID====================================>>>>>>"+projectId);
+        Log.d(TAG, "PROJECTID====================================>>>>>>" + projectId);
         for (int x = 0; x < Sensors.length; x++) {
             Log.d(TAG, "SENSOR LIST====================================================>>>>>>>>>> " + Sensors[x]);
             switch (Sensors[x]) {
                 case "accelerometer":
-                    listenT0Aaccelerometer=true;
+                    listenT0Aaccelerometer = true;
                     break;
                 case "gyroscope":
-                    listenToGyroscope=true;
+                    listenToGyroscope = true;
                     break;
                 case "magnetic_field":
-                    listenToMagnetic=true;
+                    listenToMagnetic = true;
                     break;
                 case "ambient_temperature":
-                    listenToTemperature=true;
+                    listenToTemperature = true;
                     break;
                 case "light":
-                    listenToLight=true;
+                    listenToLight = true;
                     break;
                 case "gravity":
-                    listenToGravity=true;
+                    listenToGravity = true;
                     break;
                 case "proximity":
-                    listenToProximity=true;
+                    listenToProximity = true;
                     break;
                 case "game_rotation_vector":
-                    listenToGameRotationVector=true;
+                    listenToGameRotationVector = true;
                     break;
                 default:
-                    showToast("Sensor"+Sensors[x]+" not available in the app yet");
+                    showToast("Sensor" + Sensors[x] + " not available in the app yet");
             }
         }
 
-        Log.d(TAG, "ALL THAT ARE TRUE: "+listenT0Aaccelerometer+ listenToGyroscope+ listenToLight+ listenToMagnetic+ listenToGravity+ listenToTemperature+listenToProximity+ listenToGameRotationVector);
+        Log.d(TAG, "ALL THAT ARE TRUE: " + listenT0Aaccelerometer + listenToGyroscope + listenToLight + listenToMagnetic + listenToGravity + listenToTemperature + listenToProximity + listenToGameRotationVector);
 
-
+        // register broadcast receiver here
+        IntentFilter intentFilter=new IntentFilter("com.das.tirtha.sensordatacollectorThirdservice");
+        registerReceiver(broadcastReceiver3,intentFilter);
         // start notification here.
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -153,65 +156,62 @@ public class SensorServiceThirdProject extends Service {
                 .build();
         startForeground(3, notification);
 
-        registerUserToProject(sp.getString("UserId", "noUsr"),projectId);
+        registerUserToProject(sp.getString("UserId", "noUsr"), projectId);
 
         // do work here on a separate thread
-        startThread(sensorManager, sensor1,accelerometer,gyroscope,light, magnetic, gravity, temperature, proximity, gameRotationVector,projectId);
+        startThread(sensorManager, sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector, projectId);
 
 
         return START_NOT_STICKY;
     }
 
-    public void startThread(SensorManager sensorManager, Sensor sensor1,Sensor accelerometer,Sensor gyroscope,Sensor light,Sensor magnetic,Sensor gravity,Sensor temperature,Sensor proximity,Sensor gameRotationVector,String projectId) {
+    public void startThread(SensorManager sensorManager, Sensor sensor1, Sensor accelerometer, Sensor gyroscope, Sensor light, Sensor magnetic, Sensor gravity, Sensor temperature, Sensor proximity, Sensor gameRotationVector, String projectId) {
 
-        if(listenToProximity){
-            SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager,  proximity,projectId);
-           Thread a= new Thread(ProximityRunnable);
-                   a.start();
+        if (listenToProximity) {
+            SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager, proximity, projectId);
+            Thread a = new Thread(ProximityRunnable);
+            a.start();
 
         }
-        if(listenToMagnetic){
+        if (listenToMagnetic) {
 
-            SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager,  magnetic,projectId);
+            SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager, magnetic, projectId);
             new Thread(MagneticRunnable).start();
         }
-        if(listenToTemperature)
-        {
-            SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager,  temperature,projectId);
+        if (listenToTemperature) {
+            SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager, temperature, projectId);
             new Thread(TemperatureRunnable).start();
 
         }
-        if(listenToLight)
-        {
+        if (listenToLight) {
 
-            SensorRunnable LightRunnable = new SensorRunnable(sensorManager,  light,projectId);
+            SensorRunnable LightRunnable = new SensorRunnable(sensorManager, light, projectId);
             new Thread(LightRunnable).start();
 
         }
-        if(listenToGameRotationVector)
-        {
+        if (listenToGameRotationVector) {
 
-            SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager,  gameRotationVector,projectId);
+            SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager, gameRotationVector, projectId);
             new Thread(GameRotationVectorRunnable).start();
 
         }
-        if(listenT0Aaccelerometer){
-                SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager, accelerometer, projectId);
-                Thread thread = new Thread(AccelerometerRunnable);
-                thread.start();
-                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT99999999999999^^^^^^^^^^^^^^^: "+Thread.activeCount());
+        if (listenT0Aaccelerometer) {
+            SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager, accelerometer, projectId);
+            Thread thread = new Thread(AccelerometerRunnable);
+            thread.start();
+            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT99999999999999^^^^^^^^^^^^^^^: " + Thread.activeCount());
         }
-        if(listenToGyroscope){
-            SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager,  gyroscope,projectId);
+        if (listenToGyroscope) {
+            SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager, gyroscope, projectId);
             new Thread(GyroscopeRunnable).start();
 
         }
-        if(listenToGravity){
-            SensorRunnable GravityRunnable = new SensorRunnable(sensorManager,  gravity,projectId);
+        if (listenToGravity) {
+            SensorRunnable GravityRunnable = new SensorRunnable(sensorManager, gravity, projectId);
             new Thread(GravityRunnable).start();
 
         }
-        Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT^^^^^^^^^^^^^^^: "+Thread.activeCount());
+        Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT^^^^^^^^^^^^^^^: " + Thread.activeCount());
     }
 
     public void stopThread() {
@@ -220,7 +220,11 @@ public class SensorServiceThirdProject extends Service {
 
     @Override
     public void onDestroy() {
+        stopRunnig1 = true;
+        stopThread();
+        unregisterReceiver(broadcastReceiver3);
         super.onDestroy();
+
     }
 
     @Nullable
@@ -243,55 +247,58 @@ public class SensorServiceThirdProject extends Service {
         public final static String APP_PATH_SD_CARD = "/SensorDataCollector";
         String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + APP_PATH_SD_CARD;
         FileOutputStream fOut;
-        private FileWriter writer,accelerometerWriter,gyroscopeWriter,temperatureWriter,magneticWriter,lightWriter,gravityWriter,proximityWriter,gameRotationVectorWriter;
+        private FileWriter writer, accelerometerWriter, gyroscopeWriter, temperatureWriter, magneticWriter, lightWriter, gravityWriter, proximityWriter, gameRotationVectorWriter;
         File sensorFile;
         private volatile boolean exit;
+
         SensorRunnable(SensorManager sensorManager, Sensor sensor, String projectId) {
 
             Log.d(TAG, "SensorRunnable: " + " INITIALIZING SENSOR SERVICES");
             this.sensorManager = sensorManager;
-            this.projectId=projectId;
-            this.Sensor123=sensor;
-            this.exit=false;
+            this.projectId = projectId;
+            this.Sensor123 = sensor;
+            this.exit = false;
         }
 
         @Override
         public void run() {
-                    Looper.prepare();
-                    sensorThreadLooper = Looper.myLooper();
-                    sensorThreadHandler = new Handler();
-                    String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
-                    Log.d(TAG, "run: dateeee" + date);
+//            Looper.prepare();
+//            sensorThreadLooper = Looper.myLooper();
+//            sensorThreadHandler = new Handler();
+            if(!stopRunnig1) {
+                String date = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
+                Log.d(TAG, "run: dateeee" + date);
 
-                    try {
-                        File dir = new File(fullPath);
-                        sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
+                try {
+                    File dir = new File(fullPath);
+                    sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
 
-                        if (!dir.exists()) {
-                            dir.mkdirs();
-                        }
-                    } catch (Exception e) {
-                        Log.w("creating file error", e.toString());
+                    if (!dir.exists()) {
+                        dir.mkdirs();
                     }
-                    startListeningToSensor(Sensor123, projectId);
+                } catch (Exception e) {
+                    Log.w("creating file error", e.toString());
+                }
+                startListeningToSensor(Sensor123, projectId);
 
-                    Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
-
-                    Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: "+Thread.activeCount());
-                    Looper.loop();
-
+//            Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
+//
+//            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
+//            Looper.loop();
+            }
 
         }
+
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             if (!mIsSensorUpdateEnabled) {
                 stopListeningToSensor();
                 return;
             }
-            String SensorType=sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.')+1);
-            switch (SensorType){
+            String SensorType = sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.') + 1);
+            switch (SensorType) {
                 case "accelerometer":
-                    long accelerometerTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long accelerometerTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         accelerometerWriter = new FileWriter(sensorFile, true);
                         accelerometerWriter.write("Acceleration force along the x axis : " + sensorEvent.values[0] + "," + "Acceleration force along the y axis : " + sensorEvent.values[1] + "," + "Acceleration force along the z axis : " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + accelerometerTimeInMillis + "\n");
@@ -303,10 +310,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "gyroscope":
-                    long gyroscopeTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long gyroscopeTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gyroscopeWriter = new FileWriter(sensorFile, true);
-                        gyroscopeWriter.write("  Rate of rotation around the x axis :   " + sensorEvent.values[0] +   "," + "  Rate of rotation around the y axis: " + sensorEvent.values[1] +   "," + "  Rate of rotation around the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gyroscopeTimeInMillis + "\n");
+                        gyroscopeWriter.write("  Rate of rotation around the x axis :   " + sensorEvent.values[0] + "," + "  Rate of rotation around the y axis: " + sensorEvent.values[1] + "," + "  Rate of rotation around the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gyroscopeTimeInMillis + "\n");
                         gyroscopeWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -315,10 +322,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "magnetic_field":
-                    long magnetic_fieldTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long magnetic_fieldTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         magneticWriter = new FileWriter(sensorFile, true);
-                        magneticWriter.write("Geomagnetic field strength along the  x axis :  " + sensorEvent.values[0] +   "," + "  Geomagnetic field strength along the  y axis: " + sensorEvent.values[1] +   "," + "  Geomagnetic field strength along the  z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + magnetic_fieldTimeInMillis + "\n");
+                        magneticWriter.write("Geomagnetic field strength along the  x axis :  " + sensorEvent.values[0] + "," + "  Geomagnetic field strength along the  y axis: " + sensorEvent.values[1] + "," + "  Geomagnetic field strength along the  z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + magnetic_fieldTimeInMillis + "\n");
                         magneticWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -327,10 +334,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "ambient_temperature":
-                    long ambient_temperatureTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long ambient_temperatureTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         temperatureWriter = new FileWriter(sensorFile, true);
-                        temperatureWriter.write("Ambient air temperature. :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + ambient_temperatureTimeInMillis + "\n");
+                        temperatureWriter.write("Ambient air temperature. :  " + sensorEvent.values[0] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + ambient_temperatureTimeInMillis + "\n");
                         temperatureWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -339,10 +346,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "light":
-                    long lightTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long lightTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         lightWriter = new FileWriter(sensorFile, true);
-                        lightWriter.write("luminance :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + lightTimeInMillis + "\n");
+                        lightWriter.write("luminance :  " + sensorEvent.values[0] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + lightTimeInMillis + "\n");
                         lightWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -351,10 +358,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "gravity":
-                    long gravityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long gravityTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gravityWriter = new FileWriter(sensorFile, true);
-                        gravityWriter.write("Force of gravity along the x axis :  " + sensorEvent.values[0] +   "," + "  Force of gravity along the y axis " + sensorEvent.values[1] +   "," + "  Force of gravity along the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gravityTimeInMillis + "\n");
+                        gravityWriter.write("Force of gravity along the x axis :  " + sensorEvent.values[0] + "," + "  Force of gravity along the y axis " + sensorEvent.values[1] + "," + "  Force of gravity along the z axis :   " + sensorEvent.values[2] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + gravityTimeInMillis + "\n");
                         gravityWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -364,10 +371,10 @@ public class SensorServiceThirdProject extends Service {
 
                     break;
                 case "proximity":
-                    long proximityTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long proximityTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         proximityWriter = new FileWriter(sensorFile, true);
-                        proximityWriter.write("Distance from object :  " + sensorEvent.values[0] +    "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + proximityTimeInMillis + "\n");
+                        proximityWriter.write("Distance from object :  " + sensorEvent.values[0] + "," + "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + proximityTimeInMillis + "\n");
                         proximityWriter.close();
                     } catch (IOException e) {
                         Log.e(TAG, "onSensorChanged: IO error", e);
@@ -375,11 +382,11 @@ public class SensorServiceThirdProject extends Service {
                     }
                     break;
                 case "game_rotation_vector":
-                    long game_rotation_vectorTimeInMillis = (new Date()).getTime()+ (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+                    long game_rotation_vectorTimeInMillis = (new Date()).getTime() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
                     try {
                         gameRotationVectorWriter = new FileWriter(sensorFile, true);
                         gameRotationVectorWriter.write("Rotation vector component along the x axis: " + sensorEvent.values[0] + "," +
-                                "Rotation vector component along the y axis: " + sensorEvent.values[1]+ "," + "Rotation vector component along the z axis: " + sensorEvent.values[2] + "," +
+                                "Rotation vector component along the y axis: " + sensorEvent.values[1] + "," + "Rotation vector component along the z axis: " + sensorEvent.values[2] + "," +
                                 "TimeStamp:" + sensorEvent.timestamp + "," + "TimeStamp In Milliseconds" + game_rotation_vectorTimeInMillis + "\n");
                         gameRotationVectorWriter.close();
                     } catch (IOException e) {
@@ -388,10 +395,9 @@ public class SensorServiceThirdProject extends Service {
                     }
                     break;
                 default:
-                    showToast("Sensor"+SensorType+" not available in the app yet");
+                    showToast("Sensor" + SensorType + " not available in the app yet");
 
             }
-
 
 
         }
@@ -401,7 +407,7 @@ public class SensorServiceThirdProject extends Service {
 
         }
 
-        public void startListeningToSensor(Sensor Sensor123, String projectId ) {
+        public void startListeningToSensor(Sensor Sensor123, String projectId) {
             sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
             mIsSensorUpdateEnabled = true;
             startTimer(projectId);
@@ -417,18 +423,9 @@ public class SensorServiceThirdProject extends Service {
                 @Override
                 public void run() {
                     new CountDownTimer(30000, 1000) {
-
                         @Override
                         public void onTick(long l) {
-//                            Log.d(TAG, "onTick: CLOCK TICK" + l);
-                            sensorThreadHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-//                                    Thread.currentThread().interrupt();
-//                                    return;
-                                }
-                            });
-
+                            Log.d(TAG, "onTick: CLOCK TICK" + l);
                         }
 
                         @Override
@@ -436,8 +433,8 @@ public class SensorServiceThirdProject extends Service {
                             String file = sensorFile.getAbsolutePath();
                             Log.d(TAG, "onFinish: TIMER OVER");
                             stopListeningToSensor();
-                            uploadDataToServer(sensorFile,Sensor123,projectId);
-                            Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<"+Thread.activeCount());
+                            uploadDataToServer(sensorFile, Sensor123, projectId);
+                            Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<" + Thread.activeCount());
 
                         }
                     }.start();
@@ -448,50 +445,54 @@ public class SensorServiceThirdProject extends Service {
         }
 
         public void uploadDataToServer(final File sensorFile, final Sensor Sensor123, final String projectId) {
-            Log.d(TAG, "uploadDataToServer: PROJECTID"+projectId);
+            Log.d(TAG, "uploadDataToServer: PROJECTID" + projectId);
 
             Thread DataUpload = new Thread(new Runnable() {
                 @Override
                 public void run() {
 
-                        String filePath = sensorFile.getPath();
-                        String content_type = getContentType(filePath);
-                        OkHttpClient client = new OkHttpClient();
-                        RequestBody file_body = RequestBody.create(MediaType.parse(content_type), sensorFile);
-                        RequestBody requestBody = new MultipartBody.Builder()
-                                .setType(MultipartBody.FORM)
-                                .addFormDataPart("projectId", projectId)
-                                .addFormDataPart("type", content_type)
-                                .addFormDataPart("userId", sp.getString("UserId", "noUsr"))
-                                .addFormDataPart("SensorData", filePath.substring(filePath.lastIndexOf("/") + 1), file_body)
-                                .build();
-                        String url = getResources().getString(R.string.IP) + "api/uploadSensorData";
-                        Request request = new Request.Builder().url(url)
-                                .post(requestBody)
-                                .build();
+                    String filePath = sensorFile.getPath();
+                    String content_type = getContentType(filePath);
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody file_body = RequestBody.create(MediaType.parse(content_type), sensorFile);
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("projectId", projectId)
+                            .addFormDataPart("type", content_type)
+                            .addFormDataPart("userId", sp.getString("UserId", "noUsr"))
+                            .addFormDataPart("SensorData", filePath.substring(filePath.lastIndexOf("/") + 1), file_body)
+                            .build();
+                    String url = getResources().getString(R.string.IP) + "api/uploadSensorData";
+                    Request request = new Request.Builder().url(url)
+                            .post(requestBody)
+                            .build();
 
-                        try {
-                            Response response = client.newCall(request).execute();
-                            if (!response.isSuccessful()) {
+                    try {
+                        Response response = client.newCall(request).execute();
+                        if (!response.isSuccessful()) {
 
-                                throw new IOException("error" + response);
-                            } else {
-                                // do something here
-                                Log.d(TAG, "data uploaded succesfully: ");
+                            throw new IOException("error" + response);
+                        } else {
+                            // do something here
+                            Log.d(TAG, "data uploaded succesfully: ");
 
-                                // delete the file form the device
-                                boolean deleted = sensorFile.delete();
-                                Log.d(TAG, "is the file deleted or not " + deleted);
+                            // delete the file form the device
+                            boolean deleted = sensorFile.delete();
+                            Log.d(TAG, "is the file deleted or not " + deleted);
 
 //                            start the thread again
-                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
-                                Thread b = new Thread(sensorRunnable);
-                                b.start();
-                                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
+                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
+                            Thread b = new Thread(sensorRunnable);
+                            b.start();
+                            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
+                            Intent intent = new Intent("com.das.tirtha.sensordatacollectorThirdservice");
+                            intent.putExtra("com.das.tirtha.sensor3", Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".") + 1));
+                            intent.putExtra("com.das.tirtha.projectId", projectId);
+                            sendBroadcast(intent);
 
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -509,37 +510,37 @@ public class SensorServiceThirdProject extends Service {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-    public void registerUserToProject(final String userid, final String projectId){
+    public void registerUserToProject(final String userid, final String projectId) {
 
         String ip = getResources().getString(R.string.IP);
-        String url=ip+"api/addUsersToPosts";
-        StringRequest request= new StringRequest(com.android.volley.Request.Method.POST, url,
+        String url = ip + "api/addUsersToPosts";
+        StringRequest request = new StringRequest(com.android.volley.Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            JSONObject responseObject=new JSONObject(response);
-                            String message=responseObject.getString("message");
+                            JSONObject responseObject = new JSONObject(response);
+                            String message = responseObject.getString("message");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(SensorServiceThirdProject.this,"project update error"+e.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SensorServiceThirdProject.this, "project update error" + e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SensorServiceThirdProject.this,"project update error"+error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(SensorServiceThirdProject.this, "project update error" + error.toString(), Toast.LENGTH_SHORT).show();
             }
-        })
-        {
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params=new HashMap<>();
-                params.put("userId",userid);
-                params.put("projectId",projectId);
+                Map<String, String> params = new HashMap<>();
+                params.put("userId", userid);
+                params.put("projectId", projectId);
                 return params;
             }
+
             @Override
             protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
                 mStatusCode = response.statusCode;
@@ -552,4 +553,45 @@ public class SensorServiceThirdProject extends Service {
         requestQueue.add(request);
 
     }
+
+    public BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String recieved = intent.getStringExtra("com.das.tirtha.sensor3");
+            String projectId = intent.getStringExtra("com.das.tirtha.projectId");
+            if (recieved.equals("accelerometer")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, accelerometer, projectId);
+                Thread b = new Thread(sensorRunnable);
+                b.start();
+            }
+            if (recieved.equals("gyroscope")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gyroscope, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("magnetic_field")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, magnetic, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("ambient_temperature")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, temperature, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("light")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, light, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("gravity")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gravity, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("proximity")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, proximity, projectId);
+                new Thread(sensorRunnable).start();
+            }
+            if (recieved.equals("game_rotation_vector")) {
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gameRotationVector, projectId);
+                new Thread(sensorRunnable).start();
+            }
+        }
+    };
 }
