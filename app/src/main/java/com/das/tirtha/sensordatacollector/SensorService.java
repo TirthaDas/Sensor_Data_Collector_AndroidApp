@@ -519,6 +519,8 @@ public class SensorService extends Service {
 
 
                         }
+                        response.body().close();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

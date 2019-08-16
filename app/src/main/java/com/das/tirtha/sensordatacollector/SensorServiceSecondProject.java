@@ -513,6 +513,8 @@ public class SensorServiceSecondProject extends Service {
                                 sendBroadcast(intent);
 
                             }
+                            response.body().close();
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

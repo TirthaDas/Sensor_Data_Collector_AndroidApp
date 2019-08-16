@@ -491,6 +491,7 @@ public class SensorServiceThirdProject extends Service {
                             sendBroadcast(intent);
 
                         }
+                        response.body().close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
