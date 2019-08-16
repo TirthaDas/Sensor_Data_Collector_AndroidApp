@@ -272,7 +272,6 @@ public class SensorServiceSecondProject extends Service {
 
         @Override
         public void run() {
-            while (!exit) {
                 Looper.prepare();
                 sensorThreadLooper = Looper.myLooper();
                 sensorThreadHandler = new Handler();
@@ -291,11 +290,11 @@ public class SensorServiceSecondProject extends Service {
                 }
                 startListeningToSensor(Sensor123, projectId);
 
-                Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
+//                Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
 
-                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
+//                Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT1111111111^^^^^^^^^^^^^^^: " + Thread.activeCount());
                 Looper.loop();
-            }
+
         }
         public void stopRunning()
         {
@@ -307,9 +306,6 @@ public class SensorServiceSecondProject extends Service {
                 stopListeningToSensor();
                 return;
             }
-//            Log.d(TAG, "onSensorChanged: " + "x value" + sensorEvent.values[0] + "\n" + "y value" + sensorEvent.values[1] + "\n" + "z value" + sensorEvent.values[2]);
-//            Log.d(TAG, "onSensorChanged: sensor name" + sensorEvent.sensor.getName());
-//            Log.d(TAG, "onSensorChanged: sensor type" + sensorEvent.sensor.getStringType());
             String SensorType=sensorEvent.sensor.getStringType().substring(sensorEvent.sensor.getStringType().lastIndexOf('.')+1);
             switch (SensorType){
                 case "accelerometer":
@@ -506,9 +502,9 @@ public class SensorServiceSecondProject extends Service {
                                 Log.d(TAG, "is the file deleted or not " + deleted);
 
 //                            start the thread again
-//                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
-//                                Thread b = new Thread(sensorRunnable);
-//                                b.start();
+                                SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
+                                Thread b = new Thread(sensorRunnable);
+                                b.start();
                                 Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
 
                             }
