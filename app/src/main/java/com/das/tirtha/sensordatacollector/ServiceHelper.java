@@ -47,6 +47,9 @@ public class ServiceHelper {
                 serviceIntent.putExtra("sensors", SensorList);
                 serviceIntent.putExtra("projectId", ProjectId);
                 context.startService(serviceIntent);
+
+
+
                 break;
 
             case 1:

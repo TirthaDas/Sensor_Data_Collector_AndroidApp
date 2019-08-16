@@ -1,35 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/delicateBlue">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="active projects"
-        android:textColor="#ffffff"
-        android:layout_centerInParent="true"
-        android:textSize="30sp"
-        android:gravity="center"/>
+    android:background="@color/lExtremeLightBlue"
+    android:id="@+id/recyclerViewActiveProjectList">
 
-    <Button
-        android:id="@+id/stop_project_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="53dp"
-        android:layout_marginBottom="461dp"
-        android:text="Stop Project 1" />
 
-    <Button
-        android:id="@+id/stop_project_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="52dp"
-        android:layout_marginBottom="461dp"
-        android:text="Stop Project 2" />
-
-</RelativeLayout>
+</android.support.v7.widget.RecyclerView>

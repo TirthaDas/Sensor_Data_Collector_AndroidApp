@@ -26,8 +26,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class projectDetails extends AppCompatActivity {
     private String[] data = new String[2];
@@ -39,6 +54,7 @@ public class projectDetails extends AppCompatActivity {
     private ActionMode actionMode;
     private Button startProject;
     private SharedPreferences sp;
+    private int mStatusCode;
 
     private int STORAGE_PERMISSION_CODE = 1;
     String[] permissions = new String[]{
@@ -73,7 +89,7 @@ public class projectDetails extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         sensorsListAdapter = new SensorsListAdapter(this, SensorList);
         recyclerView.setAdapter(sensorsListAdapter);
-        ArrayList<String> sensorList=getSensorList();
+        ArrayList<String> sensorList = getSensorList();
         getAllAvailableSensor(sensorList);
 
         startProject.setOnClickListener(new View.OnClickListener() {
@@ -81,11 +97,11 @@ public class projectDetails extends AppCompatActivity {
             public void onClick(View v) {
                 // runtime permissions handled first
 
-                if(!hasSensorsPermissions(projectDetails.this,permissions) || !hasStoragePermissions(projectDetails.this, permissions)){
+                if (!hasSensorsPermissions(projectDetails.this, permissions) || !hasStoragePermissions(projectDetails.this, permissions)) {
                     requestSensorPermission();
                     requestStoragePermission();
                 }
-                if(hasSensorsPermissions(projectDetails.this,permissions) && hasStoragePermissions(projectDetails.this, permissions)) {
+                if (hasSensorsPermissions(projectDetails.this, permissions) && hasStoragePermissions(projectDetails.this, permissions)) {
 
                     //sensor project can be started here now
 
@@ -99,7 +115,7 @@ public class projectDetails extends AppCompatActivity {
                         //see which number project it is
                         sp = getSharedPreferences("login", MODE_PRIVATE);
                         int myIntValue_active_projects = sp.getInt("active_projects", -1);
-                        Log.d("0000000909090009", "ACTIVE PROJECTSSS: "+myIntValue_active_projects);
+                        Log.d("0000000909090009", "ACTIVE PROJECTSSS: " + myIntValue_active_projects);
 
                         //call the relevant service
 
@@ -142,12 +158,16 @@ public class projectDetails extends AppCompatActivity {
 //                                    showToast("maximum number of projects already running");
 //                        }
 
-                        Intent AvailableProjectsIntent= new Intent(projectDetails.this,MainActivity.class);
+                        Intent AvailableProjectsIntent = new Intent(projectDetails.this, MainActivity.class);
                         startActivity(AvailableProjectsIntent);
 
 
-                        ServiceHelper serviceHelper = new ServiceHelper(data[2],stringBuilder.toString(),myIntValue_active_projects,projectDetails.this);
+                        ServiceHelper serviceHelper = new ServiceHelper(data[2], stringBuilder.toString(), myIntValue_active_projects, projectDetails.this);
                         serviceHelper.startService();
+                        String userId = sp.getString("UserId", "");
+
+                        addToActiveProjects(stringBuilder.toString(),userId,data[2]);
+
 
                     } else {
                         showToast("No Selection");
@@ -172,17 +192,17 @@ public class projectDetails extends AppCompatActivity {
                 projectDescription = null;
                 data[0] = projectTitle;
                 data[1] = projectDescription;
-                data[2]="";
+                data[2] = "";
                 Toast.makeText(projectDetails.this, "no extras found", Toast.LENGTH_SHORT).show();
 
             } else {
                 projectTitle = extras.getString("Project_title");
                 projectDescription = extras.getString("Project_Description");
-                projectId=extras.getString("projectId");
+                projectId = extras.getString("projectId");
                 data[0] = projectTitle;
                 data[1] = projectDescription;
-                data[2]=projectId;
-                ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
+                data[2] = projectId;
+                ArrayList<String> sensorList = extras.getStringArrayList("sensorList");
 //                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
 
             }
@@ -191,43 +211,40 @@ public class projectDetails extends AppCompatActivity {
             projectDescription = (String) savedInstanceState.getSerializable("Project_Description");
             data[0] = projectTitle;
             data[1] = projectDescription;
-            data[2]="";
+            data[2] = "";
 //            Toast.makeText(projectDetails.this,"welcome here 1 "+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
 
         }
         return data;
     }
-    public ArrayList<String> getSensorList(){
+
+    public ArrayList<String> getSensorList() {
         Bundle extras = getIntent().getExtras();
-        ArrayList<String> sensorList=extras.getStringArrayList("sensorList");
-        return  sensorList;
+        ArrayList<String> sensorList = extras.getStringArrayList("sensorList");
+        return sensorList;
     }
 
-    public void getAllAvailableSensor(ArrayList<String > sensorList) {
+    public void getAllAvailableSensor(ArrayList<String> sensorList) {
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
         SensorList = new ArrayList<>();
-    for(int h=0;h<sensorList.size();h++) {
+        for (int h = 0; h < sensorList.size(); h++) {
 
-        String searchKey = sensorList.get(h);
-        for (int x = 0; x < sensors.size(); x++) {
-            String TAG = "hey ";
+            String searchKey = sensorList.get(h);
+            for (int x = 0; x < sensors.size(); x++) {
+                String TAG = "hey ";
 //            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
-            if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase()) ){
-                Sensors sensor = new Sensors();
-                sensor.setName(sensors.get(x).getName());
-                sensor.setType(sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')+1));
-                sensor.setVendor(sensors.get(x).getVendor());
-                SensorList.add(sensor);
-                break;
+                if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase())) {
+                    Sensors sensor = new Sensors();
+                    sensor.setName(sensors.get(x).getName());
+                    sensor.setType(sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.') + 1));
+                    sensor.setVendor(sensors.get(x).getVendor());
+                    SensorList.add(sensor);
+                    break;
+                }
             }
         }
-    }
-
-
-
-
 
 
         sensorsListAdapter.setmSensorList(SensorList);
@@ -249,19 +266,19 @@ public class projectDetails extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         }
         return true;
 
     }
+
     public boolean hasSensorsPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
                 return false;
-            }else {
+            } else {
                 return true;
             }
         }
@@ -270,7 +287,7 @@ public class projectDetails extends AppCompatActivity {
     }
 
 
-    public void requestSensorPermission(){
+    public void requestSensorPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BODY_SENSORS)) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission Required")
@@ -288,7 +305,7 @@ public class projectDetails extends AppCompatActivity {
     }
 
 
-    public void requestStoragePermission(){
+    public void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission Required")
@@ -314,5 +331,64 @@ public class projectDetails extends AppCompatActivity {
                 showToast("Permission Denied");
             }
         }
+    }
+
+    public void addToActiveProjects(final String SensorList, final String userId, final String ProjectId) {
+        Log.d("TAAAG", "addToActiveProjects: ");
+        String ip = getResources().getString(R.string.IP);
+        String url_addToActiveProjects = ip+"api/addToActiveProjects";
+
+        // setting the volley request and listener
+
+        StringRequest request = new StringRequest(Request.Method.POST, url_addToActiveProjects,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject responseObject = new JSONObject(response);
+                            String message = responseObject.getString("message");
+                            if (mStatusCode == 200) {
+                                String ActiveProjectID = responseObject.getString("_id");
+                                Toast.makeText(projectDetails.this, message+ActiveProjectID, Toast.LENGTH_SHORT).show();
+
+                            } else if (mStatusCode == 201) {
+                                Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();
+
+                            } else if (mStatusCode == 400||mStatusCode==401) {
+                                Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(projectDetails.this, "adding active projects error" + e.toString(), Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(projectDetails.this, "adding active projects  error" + error.toString(), Toast.LENGTH_SHORT).show();
+
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("userId",userId);
+                params.put("projectId", ProjectId);
+                params.put("sensorList", SensorList);
+                return params;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                mStatusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+
     }
 }

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="260dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:paddingTop="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="8dp"
+    android:id="@+id/activeProjectCard"
+    android:foreground="?attr/selectableItemBackground"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+
+        >
+
+        <Switch
+            android:id="@+id/activeProjectSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:checked="true"
+            android:text="Switch:   "
+            android:textOff="OFF   "
+            android:textOn="ON   "
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Title"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25sp"
+            android:textStyle="normal"
+            android:textColor="#000000"
+
+            />
+
+
+        <TextView
+            android:id="@+id/activeProject_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="3dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:textSize="22dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/delicateBlue"
+
+            android:layout_gravity="center_horizontal"/>
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Description"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:textFontWeight="10"-->
+        <!--android:textSize="25sp"-->
+        <!--android:textStyle="normal"-->
+        <!--android:layout_marginTop="1dp"-->
+
+        <!--android:textColor="#000000"-->
+        <!--/>-->
+
+
+        <TextView
+            android:id="@+id/activeProject_item_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"
+            android:layout_marginTop="10dp"
+            android:textSize="22dp"
+            android:textAlignment="viewStart"
+            android:ellipsize="end"
+            android:maxLines="4"/>
+
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_gravity="bottom">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="answer questions"
+        android:layout_gravity="bottom"
+        android:id="@+id/activeProjectAnswerQuestions"
+        />
+
+</LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

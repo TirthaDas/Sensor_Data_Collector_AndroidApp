@@ -425,7 +425,7 @@ public class SensorServiceThirdProject extends Service {
                     new CountDownTimer(30000, 1000) {
                         @Override
                         public void onTick(long l) {
-                            Log.d(TAG, "onTick: CLOCK TICK" + l);
+//                            Log.d(TAG, "onTick: CLOCK TICK" + l);
                         }
 
                         @Override
