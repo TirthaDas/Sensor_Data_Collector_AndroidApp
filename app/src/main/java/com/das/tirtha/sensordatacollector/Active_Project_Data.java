@@ -8,13 +8,15 @@ public class Active_Project_Data {
     String id;
     String  sensorList;
     String Userid;
-    public Active_Project_Data(String id,String projectTitle, String Description, String sensorList, String Userid)
+    String ProjectId;
+    public Active_Project_Data(String id,String projectTitle, String Description, String sensorList, String Userid,String ProjectId)
     {
         this.projectTitle = projectTitle;
         this.Description = Description;
         this.sensorList=sensorList;
         this.id = id;
         this.Userid=Userid;
+        this.ProjectId=ProjectId;
 
     }
     public String getProjectTitle()
@@ -31,7 +33,10 @@ public class Active_Project_Data {
     public String getId(){
         return id;
     }
-    public  String getUserid(){
+    public  String getUserId(){
         return Userid;
+    }
+    public String getProjectId(){
+        return ProjectId;
     }
 }

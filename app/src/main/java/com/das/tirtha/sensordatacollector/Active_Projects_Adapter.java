@@ -22,10 +22,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Projects_Adapter.activeProjectsViewHolder> {
 
     private Context context;
-    private ArrayList<projectData> mprojectList;
+    private ArrayList<Active_Project_Data> mprojectList;
     public SharedPreferences sp;
 
-    public Active_Projects_Adapter(Context context, ArrayList<projectData> mprojectList){
+    public Active_Projects_Adapter(Context context, ArrayList<Active_Project_Data> mprojectList){
         this.context=context;
         this.mprojectList=mprojectList;
     }
@@ -38,7 +38,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
 
     @Override
     public void onBindViewHolder(@NonNull activeProjectsViewHolder activeProjectsviewHolder, final int i) {
-        final projectData projectData=mprojectList.get(i);
+        final Active_Project_Data projectData=mprojectList.get(i);
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
         Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
@@ -75,15 +75,16 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     Toast.makeText(context, "Item "  +i+ " is ON.", Toast.LENGTH_SHORT).show();
-                    ServiceHelper serviceHelper2=new ServiceHelper(mprojectList.get(i).getId(),context);
-                    serviceHelper2.stopServices();
+
+                    sp = context.getSharedPreferences("login", MODE_PRIVATE);
+                    int myIntValue_active_projects = sp.getInt("active_projects", -1);
+                    ServiceHelper serviceHelper1 = new ServiceHelper(mprojectList.get(i).getProjectId(),mprojectList.get(i).getSensorList(),myIntValue_active_projects,context);
+                    serviceHelper1.startService();
 
                 } else {
                     Toast.makeText(context, "Item "  +i+ " is OFF.", Toast.LENGTH_SHORT).show();
-                    sp = context.getSharedPreferences("login", MODE_PRIVATE);
-                    int myIntValue_active_projects = sp.getInt("active_projects", -1);
-                    ServiceHelper serviceHelper1 = new ServiceHelper(mprojectList.get(i).getId(),"",myIntValue_active_projects,context);
-                    serviceHelper1.startService();
+                    ServiceHelper serviceHelper2=new ServiceHelper(mprojectList.get(i).getProjectId(),context);
+                    serviceHelper2.stopServices();
 
                 }
             }

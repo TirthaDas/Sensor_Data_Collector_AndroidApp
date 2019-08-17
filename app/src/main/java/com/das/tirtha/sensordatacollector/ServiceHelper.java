@@ -6,6 +6,21 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class ServiceHelper {
@@ -112,5 +127,65 @@ public class ServiceHelper {
     private void showToast(String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
+    public void addToActiveProjects(final String SensorList, final String userId, final String ProjectId) {
+        Log.d("TAAAG", "addToActiveProjects: ");
+        String ip = getResources().getString(R.string.IP);
+        String url_addToActiveProjects = ip+"api/addToActiveProjects";
+
+        // setting the volley request and listener
+
+        StringRequest request = new StringRequest(Request.Method.POST, url_addToActiveProjects,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject responseObject = new JSONObject(response);
+                            String message = responseObject.getString("message");
+                            if (mStatusCode == 200) {
+                                String ActiveProjectID = responseObject.getString("_id");
+                                Toast.makeText(projectDetails.this, message+ActiveProjectID, Toast.LENGTH_SHORT).show();
+
+                            } else if (mStatusCode == 201) {
+                                Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();
+
+                            } else if (mStatusCode == 400||mStatusCode==401) {
+                                Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(projectDetails.this, "adding active projects error" + e.toString(), Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(projectDetails.this, "adding active projects  error" + error.toString(), Toast.LENGTH_SHORT).show();
+
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("userId",userId);
+                params.put("projectId", ProjectId);
+                params.put("sensorList", SensorList);
+                return params;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                mStatusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+
+    }
+
+
 
 }
