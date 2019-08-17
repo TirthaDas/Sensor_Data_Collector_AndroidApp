@@ -186,6 +186,7 @@ getVl(UserId);
                                     String SensorList = singleActiveProject.getString("sensorList");
                                     String UserID = singleActiveProject.getString("userId");
                                     String ProjectId = singleActiveProject.getString("projectId");
+                                    boolean hasQuestions=singleActiveProject.getBoolean("hasQuestions");
                                     boolean isCurrentlyActive=singleActiveProject.getBoolean("isCurrentlyActive");
                                     Log.d(TAG, "onResponse: ******************************id"+id);
                                     Log.d(TAG, "onResponse: ******************************projectTitle"+projectTitle);
@@ -193,7 +194,7 @@ getVl(UserId);
                                     Log.d(TAG, "onResponse: ******************************SensorList"+SensorList);
                                     Log.d(TAG, "onResponse: ******************************UserID"+UserID);
                                     Log.d(TAG, "onResponse: ******************************ProjectId"+ProjectId);
-                                    mprojectList.add(new Active_Project_Data(id, projectTitle, projectDesciption, SensorList,UserID,ProjectId,isCurrentlyActive));
+                                    mprojectList.add(new Active_Project_Data(id, projectTitle, projectDesciption, SensorList,UserID,ProjectId,isCurrentlyActive,hasQuestions));
 
 
                                 }

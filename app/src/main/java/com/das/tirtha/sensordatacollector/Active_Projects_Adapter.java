@@ -41,6 +41,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         final Active_Project_Data projectData=mprojectList.get(i);
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
+        boolean hasQuestions=projectData.gethasQuestions();
         Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
         activeProjectsviewHolder.projectTitle.setText(Projecttitle);
         activeProjectsviewHolder.projectDescriptoion.setText(ProjectDescription);
@@ -62,7 +63,11 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
 //
 //            }
 //        });
-
+        if(hasQuestions){
+            activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.VISIBLE);
+        }else {
+            activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.GONE);
+        }
         activeProjectsviewHolder.HasMoreQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
