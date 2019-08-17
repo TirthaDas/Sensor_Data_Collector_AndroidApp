@@ -44,6 +44,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
         activeProjectsviewHolder.projectTitle.setText(Projecttitle);
         activeProjectsviewHolder.projectDescriptoion.setText(ProjectDescription);
+        activeProjectsviewHolder.aSwitch.setChecked(mprojectList.get(i).isCurrentlyActive);
 
 //        activeProjectsviewHolder.itemView.setOnClickListener(new View.OnClickListener()
 //        {
@@ -79,12 +80,12 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
                     sp = context.getSharedPreferences("login", MODE_PRIVATE);
                     int myIntValue_active_projects = sp.getInt("active_projects", -1);
                     ServiceHelper serviceHelper1 = new ServiceHelper(mprojectList.get(i).getProjectId(),mprojectList.get(i).getSensorList(),myIntValue_active_projects,context);
-                    serviceHelper1.startService();
+                    serviceHelper1.startService(true);
 
                 } else {
                     Toast.makeText(context, "Item "  +i+ " is OFF.", Toast.LENGTH_SHORT).show();
                     ServiceHelper serviceHelper2=new ServiceHelper(mprojectList.get(i).getProjectId(),context);
-                    serviceHelper2.stopServices();
+                    serviceHelper2.stopServices(mprojectList.get(i).getId());
 
                 }
             }

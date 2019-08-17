@@ -163,10 +163,10 @@ public class projectDetails extends AppCompatActivity {
 
 
                         ServiceHelper serviceHelper = new ServiceHelper(data[2], stringBuilder.toString(), myIntValue_active_projects, projectDetails.this);
-                        serviceHelper.startService();
+                        serviceHelper.startService(false);
                         String userId = sp.getString("UserId", "");
 
-                        addToActiveProjects(stringBuilder.toString(),userId,data[2]);
+//                        addToActiveProjects(stringBuilder.toString(),userId,data[2]);
 
 
                     } else {
