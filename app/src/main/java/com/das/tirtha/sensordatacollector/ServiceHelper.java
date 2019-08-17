@@ -52,58 +52,60 @@ public class ServiceHelper {
     public void startService(Boolean fromActiveProjectsScreen) {
         sp = context.getSharedPreferences("login", MODE_PRIVATE);
         Log.d("FROM SERVICE HELPER", "ACTIVE PROJECTSSS: " + myIntValue_active_projects);
-        String UserId=sp.getString("UserId","noUser");
+        String UserId = sp.getString("UserId", "noUser");
+        boolean Thread0 = sp.getBoolean("Thread0", false);
+        boolean Thread1 = sp.getBoolean("Thread1", false);
+        boolean Thread2 = sp.getBoolean("Thread2", false);
 
         //call the relevant service
 
-        switch (myIntValue_active_projects) {
-            case 0:
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putInt("active_projects", 1);
-                editor.putString("case0",ProjectId);
-                editor.apply();
-                addToActiveProjects(SensorList,UserId,ProjectId);
-                Intent serviceIntent = new Intent(context, SensorService.class);
-                serviceIntent.putExtra("sensors", SensorList);
-                serviceIntent.putExtra("projectId", ProjectId);
-                context.startService(serviceIntent);
-//                addToActiveProjects(SensorList,UserId,ProjectId);
+//        switch (myIntValue_active_projects) {
+//            case 0:
+        if (!Thread0) {
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putInt("active_projects", 1);
+            editor.putBoolean("Thread0",true);
+            editor.putString("case0", ProjectId);
+            editor.apply();
+            addToActiveProjects(SensorList, UserId, ProjectId);
+            Intent serviceIntent = new Intent(context, SensorService.class);
+            serviceIntent.putExtra("sensors", SensorList);
+            serviceIntent.putExtra("projectId", ProjectId);
+            context.startService(serviceIntent);
 
-
-                break;
-
-            case 1:
-                SharedPreferences.Editor editor1 = sp.edit();
-                editor1.putInt("active_projects", 2);
-                editor1.putString("case1",ProjectId);
-                editor1.apply();
-                addToActiveProjects(SensorList,UserId,ProjectId);
-                Intent serviceIntent2 = new Intent(context, SensorServiceSecondProject.class);
-                serviceIntent2.putExtra("sensors", SensorList);
-                serviceIntent2.putExtra("projectId", ProjectId);
-                context.startService(serviceIntent2);
-//                addToActiveProjects(SensorList,UserId,ProjectId);
-
-                break;
-
-            case 2:
-                SharedPreferences.Editor editor2 = sp.edit();
-                editor2.putInt("active_projects", 3);
-                editor2.putString("case2",ProjectId);
-                editor2.apply();
-                addToActiveProjects(SensorList,UserId,ProjectId);
-                Intent serviceIntent3 = new Intent(context, SensorServiceThirdProject.class);
-                serviceIntent3.putExtra("sensors", SensorList);
-                serviceIntent3.putExtra("projectId",ProjectId);
-                context.startService(serviceIntent3);
-
-                break;
-            default:
-                showToast("maximum number of projects already running");
         }
-//        addToActiveProjects(SensorList,UserId,ProjectId);
 
-        if(!fromActiveProjectsScreen){
+
+        else if (!Thread1) {
+            SharedPreferences.Editor editor1 = sp.edit();
+            editor1.putInt("active_projects", 2);
+            editor1.putBoolean("Thread1",true);
+            editor1.putString("case1", ProjectId);
+            editor1.apply();
+            addToActiveProjects(SensorList, UserId, ProjectId);
+            Intent serviceIntent2 = new Intent(context, SensorServiceSecondProject.class);
+            serviceIntent2.putExtra("sensors", SensorList);
+            serviceIntent2.putExtra("projectId", ProjectId);
+            context.startService(serviceIntent2);
+        }
+
+        else if (!Thread2) {
+            SharedPreferences.Editor editor2 = sp.edit();
+            editor2.putInt("active_projects", 3);
+            editor2.putBoolean("Thread2",true);
+            editor2.putString("case2", ProjectId);
+            editor2.apply();
+            addToActiveProjects(SensorList, UserId, ProjectId);
+            Intent serviceIntent3 = new Intent(context, SensorServiceThirdProject.class);
+            serviceIntent3.putExtra("sensors", SensorList);
+            serviceIntent3.putExtra("projectId", ProjectId);
+            context.startService(serviceIntent3);
+        }
+        else {
+            showToast("maximum number of projects already running");
+        }
+
+        if (!fromActiveProjectsScreen) {
             Intent AvailableProjectsIntent = new Intent(context, MainActivity.class);
             context.startActivity(AvailableProjectsIntent);
         }
@@ -117,6 +119,9 @@ public class ServiceHelper {
         String ProjectInService1=sp.getString("case1","");
         String ProjectInService2=sp.getString("case2","");
         if (ProjectInService0.equals(ProjectId)){
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean("Thread0",false);
+            editor.apply();
             Intent serviceIntent = new Intent(context, SensorService.class);
             context.stopService(serviceIntent);
             updateActiveProjectStatus(activeProjectId);
@@ -124,6 +129,9 @@ public class ServiceHelper {
 
         }
         if (ProjectInService1.equals(ProjectId)){
+            SharedPreferences.Editor editor1 = sp.edit();
+            editor1.putBoolean("Thread1",false);
+            editor1.apply();
             Intent serviceIntent2 = new Intent(context, SensorServiceSecondProject.class);
             context.stopService(serviceIntent2);
             updateActiveProjectStatus(activeProjectId);
@@ -131,6 +139,9 @@ public class ServiceHelper {
 
         }
         if (ProjectInService2.equals(ProjectId)){
+            SharedPreferences.Editor editor2 = sp.edit();
+            editor2.putBoolean("Thread2",false);
+            editor2.apply();
             Intent serviceIntent3 = new Intent(context, SensorServiceThirdProject.class);
             context.stopService(serviceIntent3);
             updateActiveProjectStatus(activeProjectId);
