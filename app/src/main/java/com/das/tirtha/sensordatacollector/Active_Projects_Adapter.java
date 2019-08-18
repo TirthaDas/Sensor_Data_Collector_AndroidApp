@@ -41,6 +41,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         final Active_Project_Data projectData=mprojectList.get(i);
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
+        final String ProjectId=projectData.getProjectId();
         boolean hasQuestions=projectData.gethasQuestions();
         Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
         activeProjectsviewHolder.projectTitle.setText(Projecttitle);
@@ -64,14 +65,20 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
 //            }
 //        });
         if(hasQuestions){
+            Log.d("*********", "onBindViewHolder: "+"it has questions");
             activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.VISIBLE);
         }else {
             activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.GONE);
+            Log.d("*********", "onBindViewHolder: "+"it has NO questions");
+
         }
         activeProjectsviewHolder.HasMoreQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, "Item "  +i+ " is clicked.", Toast.LENGTH_SHORT).show();
+                Intent intent= new Intent(context,Questions_Activity.class);
+                intent.putExtra("ProjectId",ProjectId);
+                context.startActivity(intent);
 
             }
         });
@@ -88,7 +95,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
                     serviceHelper1.startService(true);
 
                 } else {
-                    Toast.makeText(context, "Item "  +i+ " is OFF.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Item "  +i+ " is OFF.", Toast.LENGTH_SHORT).show();
                     ServiceHelper serviceHelper2=new ServiceHelper(mprojectList.get(i).getProjectId(),context);
                     serviceHelper2.stopServices(mprojectList.get(i).getId());
 
