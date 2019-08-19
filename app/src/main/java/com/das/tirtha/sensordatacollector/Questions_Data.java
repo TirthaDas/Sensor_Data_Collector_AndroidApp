@@ -8,6 +8,10 @@ public class Questions_Data {
     String Answer;
 
 
+    public void setAnswer(String answer) {
+        Answer = answer;
+    }
+
     public Questions_Data(String QuestionId, String Question, String ProjectId, String UserId, String Answer) {
         this.QuestionId=QuestionId;
         this.Question=Question;

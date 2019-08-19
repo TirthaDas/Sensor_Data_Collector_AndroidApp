@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,23 @@ public class Questions_Adapter extends RecyclerView.Adapter<Questions_Adapter.Qu
     public void onBindViewHolder(@NonNull QuestionsViewHolder questionsViewHolder, int i) {
         final Questions_Data questions_data=mQuestionList.get(i);
         questionsViewHolder.questionText.setText(questions_data.getQuesiton());
+        questionsViewHolder.answer.setText(questions_data.getAnswer());
+        questionsViewHolder.answer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                questions_data.setAnswer(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
 
     }

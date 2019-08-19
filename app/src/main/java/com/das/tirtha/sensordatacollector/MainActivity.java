@@ -35,6 +35,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // get the shared preference instance
         sp = getSharedPreferences("login",MODE_PRIVATE);
+
+        // empty  all threads
+//          sp.edit().putBoolean("Thread1",false).apply();
+//          sp.edit().putBoolean("Thread0",false).apply();
+//          sp.edit().putBoolean("Thread2",false).apply();
+
+
 //        SharedPreferences.Editor editor=sp.edit();
 
 //        editor.putInt("active_projects",1).apply();
