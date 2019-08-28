@@ -50,6 +50,8 @@ public class projectsAdapter extends RecyclerView.Adapter<projectsAdapter.projec
                 intent.putExtra("Project_title",mprojectList.get(i).getProjectTitle());
                 intent.putExtra("Project_Description",mprojectList.get(i).getDescription());
                 intent.putExtra("sensorList",mprojectList.get(i).getSensorList());
+                intent.putExtra("duration",mprojectList.get(i).getDuration());
+
 
                 context.startActivity(intent);
 

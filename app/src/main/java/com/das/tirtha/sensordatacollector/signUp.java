@@ -60,7 +60,7 @@ public class signUp extends AppCompatActivity {
         email=findViewById(R.id.Email);
         password=findViewById(R.id.Password);
         confirmpasswprd=findViewById(R.id.ConfirmPassword);
-        radioGroup = findViewById(R.id.Radio);
+//        radioGroup = findViewById(R.id.Radio);
         register=findViewById(R.id.Register);
         progressBar=findViewById(R.id.progressBar);
 
@@ -84,23 +84,22 @@ public class signUp extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                if(selectedId != -1) {
-                    //do something
-                    radioButton =  findViewById(selectedId);
-                    final String gender=radioButton.getText().toString();
-                    addNewUSer(gender);
+//                int selectedId = radioGroup.getCheckedRadioButtonId();
+//                if(selectedId != -1) {
+//                    //do something
+//                    radioButton =  findViewById(selectedId);
+//                    final String gender=radioButton.getText().toString();
+//                    addNewUSer(gender);
 
-//                    Toast.makeText(signUp.this,
-//                            radioButton.getText(), Toast.LENGTH_LONG).show();
 
-                } else {
+//                } else
+//                    {
                     //do something else
 //                    Toast.makeText(signUp.this,"Please select a gender",Toast.LENGTH_SHORT).show();
-                    addNewUSer("NS");
+                    addNewUSer();
 
-
-                }
+//
+//                }
 
                 // find the radiobutton by returned id
 
@@ -114,7 +113,7 @@ public class signUp extends AppCompatActivity {
         return true;
     }
 
-    private void addNewUSer(final String gender){
+    private void addNewUSer(){
 
         String ip = getResources().getString(R.string.IP);
         String url_register = ip+"api/addUser";
@@ -138,14 +137,14 @@ public class signUp extends AppCompatActivity {
         awesomeValidation.addValidation(signUp.this, R.id.ConfirmPassword,R.id.Password, R.string.confirmpassword_err);
 
         if(awesomeValidation.validate()){
-            if(gender.equals("NS")){
-                Toast.makeText(signUp.this,"Please select a gender",Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-                register.setVisibility(View.VISIBLE);
-
-            }
-
-            else {
+//            if(gender.equals("NS")){
+//                Toast.makeText(signUp.this,"Please select a gender",Toast.LENGTH_SHORT).show();
+//                progressBar.setVisibility(View.GONE);
+//                register.setVisibility(View.VISIBLE);
+//
+//            }
+//
+//            else {
                 // setting the volley request and listener
 
                 StringRequest request= new StringRequest(Request.Method.POST, url_register,
@@ -195,7 +194,7 @@ public class signUp extends AppCompatActivity {
                         params.put("Username",username);
                         params.put("Email",email);
                         params.put("Password",password);
-                        params.put("Gender",gender);
+//                        params.put("Gender",gender);
 
                         return params;
                     }
@@ -210,7 +209,7 @@ public class signUp extends AppCompatActivity {
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 requestQueue.add(request);
 
-            }
+//            }
             }
         else {
             progressBar.setVisibility(View.GONE);

@@ -82,6 +82,7 @@ public class available_projects extends Fragment {
                                 String id=projectData1.getString("_id");
                                 String projectTitle=projectData1.getString("title");
                                 String projectDesciption=projectData1.getString("content");
+                                String duration=projectData1.getString("duration");
                                 ArrayList<String> listdata = new ArrayList<String>();
                                 JSONArray sensorList=projectData1.getJSONArray("sensorList");
                                 if (sensorList != null) {
@@ -90,7 +91,8 @@ public class available_projects extends Fragment {
                                     }
                                 }
                                 Log.d(TAG, "onResponse000:  sensor list"+sensorList);
-                                Log.d(TAG, "onResponse: pid"+id);
+                                Log.d(TAG, "onResponse000:  sensor list in list data"+listdata);
+                                Log.d(TAG, "onResponse: project name"+projectTitle);
 
 
                                 String userid=sp.getString("UserId", "noUsr");
@@ -113,7 +115,7 @@ public class available_projects extends Fragment {
                                         continue label;
                                     }
                                 }
-                                mprojectList.add(new projectData(id,projectTitle,projectDesciption,listdata));
+                                mprojectList.add(new projectData(id,projectTitle,projectDesciption,listdata,duration));
                             }
                             sp = (getActivity()).getSharedPreferences("login",MODE_PRIVATE);
                             SharedPreferences.Editor editor=sp.edit();

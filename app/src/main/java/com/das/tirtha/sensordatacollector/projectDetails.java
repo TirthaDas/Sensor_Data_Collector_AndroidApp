@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 public class projectDetails extends AppCompatActivity {
-    private String[] data = new String[2];
+    private String[] data = new String[4];
     private TextView project_detail_title, mTitle;
     private ArrayList<Sensors> SensorList = new ArrayList<>();
     private SensorsListAdapter sensorsListAdapter;
@@ -162,7 +162,7 @@ public class projectDetails extends AppCompatActivity {
                         startActivity(AvailableProjectsIntent);
 
 
-                        ServiceHelper serviceHelper = new ServiceHelper(data[2], stringBuilder.toString(), myIntValue_active_projects, projectDetails.this);
+                        ServiceHelper serviceHelper = new ServiceHelper(data[2], stringBuilder.toString(), myIntValue_active_projects, projectDetails.this,data[3]);
                         serviceHelper.startService(false);
                         String userId = sp.getString("UserId", "");
 
@@ -180,10 +180,11 @@ public class projectDetails extends AppCompatActivity {
     }
 
     public String[] getExtasFromIntent(Bundle savedInstanceState) {
-        String[] data = new String[3];
+        String[] data = new String[4];
         String projectTitle;
         String projectDescription;
         String projectId;
+        String duration;
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -193,15 +194,19 @@ public class projectDetails extends AppCompatActivity {
                 data[0] = projectTitle;
                 data[1] = projectDescription;
                 data[2] = "";
+                data[3]="";
                 Toast.makeText(projectDetails.this, "no extras found", Toast.LENGTH_SHORT).show();
 
             } else {
                 projectTitle = extras.getString("Project_title");
                 projectDescription = extras.getString("Project_Description");
                 projectId = extras.getString("projectId");
+                duration = extras.getString("duration");
+
                 data[0] = projectTitle;
                 data[1] = projectDescription;
                 data[2] = projectId;
+                data[3]=duration;
                 ArrayList<String> sensorList = extras.getStringArrayList("sensorList");
 //                Toast.makeText(projectDetails.this,"welcome here"+projectTitle+projectDescription+sensorList,Toast.LENGTH_SHORT).show();
 
@@ -212,6 +217,7 @@ public class projectDetails extends AppCompatActivity {
             data[0] = projectTitle;
             data[1] = projectDescription;
             data[2] = "";
+            data[3]="";
 //            Toast.makeText(projectDetails.this,"welcome here 1 "+projectTitle+projectDescription,Toast.LENGTH_SHORT).show();
 
         }
@@ -234,7 +240,7 @@ public class projectDetails extends AppCompatActivity {
             String searchKey = sensorList.get(h);
             for (int x = 0; x < sensors.size(); x++) {
                 String TAG = "hey ";
-//            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
+            Log.d(TAG, "getAllAvailableSensor:  XXXXXXXXYYYYYYYY" + sensors.get(x).getStringType().substring(sensors.get(x).getStringType().lastIndexOf('.')));
                 if (sensors.get(x).getName().toLowerCase().contains(searchKey.toLowerCase())) {
                     Sensors sensor = new Sensors();
                     sensor.setName(sensors.get(x).getName());

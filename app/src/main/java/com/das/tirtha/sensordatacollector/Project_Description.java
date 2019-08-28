@@ -1,6 +1,8 @@
 package com.das.tirtha.sensordatacollector;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,7 @@ public class Project_Description extends AppCompatActivity {
     private Button selectSensors;
     private String projectTitle;
     private String projectId;
+    private String duration;
     private String projectDescriptionContent;
     private ArrayList<String> sensorList;
     @Override
@@ -47,6 +50,7 @@ public class Project_Description extends AppCompatActivity {
         //get extras
         projectId=extras.getString("projectId");
         projectTitle = extras.getString("Project_title");
+        duration=extras.getString("duration");
         projectDescriptionContent = extras.getString("Project_Description");
         sensorList=extras.getStringArrayList("sensorList");
         Log.d("HELLO", "onCreate: PRIDDDD"+projectId);
@@ -59,13 +63,41 @@ public class Project_Description extends AppCompatActivity {
         selectSensors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Project_Description.this,projectDetails.class);
-                intent.putExtra("Project_title",projectTitle);
-                intent.putExtra("Project_Description",projectDescriptionContent);
-                intent.putExtra("sensorList",sensorList);
-                intent.putExtra("projectId",projectId);
 
-               startActivity(intent);
+                if(sensorList.size()==0){
+                    new AlertDialog.Builder(Project_Description.this)
+                            .setTitle("Sensor data not required")
+                            .setMessage("This project does not need sensor data, instead it has a questionnaire. press ok to participate")
+
+                            // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Continue with delete operation
+                                    Log.d("PRESSSS", "onClick: OK PRESSED");
+                                    Intent intent= new Intent(Project_Description.this,Questions_Activity.class);
+                                    intent.putExtra("ProjectId",projectId);
+                                    startActivity(intent);
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton(android.R.string.no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    return;
+                }
+                else {
+                    Intent intent = new Intent(Project_Description.this, projectDetails.class);
+                    intent.putExtra("Project_title", projectTitle);
+                    intent.putExtra("Project_Description", projectDescriptionContent);
+                    intent.putExtra("sensorList", sensorList);
+                    intent.putExtra("projectId", projectId);
+                    intent.putExtra("duration", duration);
+
+
+                    startActivity(intent);
+                }
             }
         });
 

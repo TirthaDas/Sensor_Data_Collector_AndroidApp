@@ -11,7 +11,8 @@ public class Active_Project_Data {
     String ProjectId;
     boolean isCurrentlyActive;
     boolean hasQuestions;
-    public Active_Project_Data(String id,String projectTitle, String Description, String sensorList, String Userid,String ProjectId,boolean isCurrentlyActive,boolean hasQuestions)
+    String duration;
+    public Active_Project_Data(String id,String projectTitle, String Description, String sensorList, String Userid,String ProjectId,boolean isCurrentlyActive,boolean hasQuestions,String duration)
     {
         this.projectTitle = projectTitle;
         this.Description = Description;
@@ -21,6 +22,7 @@ public class Active_Project_Data {
         this.ProjectId=ProjectId;
         this.isCurrentlyActive=isCurrentlyActive;
         this.hasQuestions=hasQuestions;
+        this.duration=duration;
 
     }
     public String getProjectTitle()
@@ -31,6 +33,11 @@ public class Active_Project_Data {
     {
         return Description;
     }
+    public String getDuration()
+    {
+        return duration;
+    }
+
     public String  getSensorList(){
         return sensorList;
     }

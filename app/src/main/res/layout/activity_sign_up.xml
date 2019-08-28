@@ -111,39 +111,39 @@
     </android.support.design.widget.TextInputLayout>
 
 
-    <RadioGroup
-        android:id="@+id/Radio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:orientation="horizontal">
+    <!--<RadioGroup-->
+        <!--android:id="@+id/Radio"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="19dp"-->
+        <!--android:orientation="horizontal">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:text="Gender"
-            android:textSize="22sp" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="4dp"-->
+            <!--android:text="Gender"-->
+            <!--android:textSize="22sp" />-->
 
-        <RadioButton
-            android:id="@+id/RadioMale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:padding="4dp"
-            android:text="Male"
-            android:textSize="22sp" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/RadioMale"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:padding="4dp"-->
+            <!--android:text="Male"-->
+            <!--android:textSize="22sp" />-->
 
-        <RadioButton
-            android:id="@+id/RadioFemale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:padding="4dp"
-            android:text="Female"
-            android:textSize="22sp" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/RadioFemale"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:padding="4dp"-->
+            <!--android:text="Female"-->
+            <!--android:textSize="22sp" />-->
 
-    </RadioGroup>
+    <!--</RadioGroup>-->
 <ProgressBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

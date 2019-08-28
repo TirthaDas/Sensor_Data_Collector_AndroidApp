@@ -42,6 +42,8 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         String Projecttitle= projectData.getProjectTitle();
         String ProjectDescription= projectData.getDescription();
         final String ProjectId=projectData.getProjectId();
+        final String duration=mprojectList.get(i).getDuration();
+
         boolean hasQuestions=projectData.gethasQuestions();
         Log.d("adapter", "onBindViewHolder: P0000Id"+projectData.getId());
         activeProjectsviewHolder.projectTitle.setText(Projecttitle);
@@ -91,7 +93,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
 
                     sp = context.getSharedPreferences("login", MODE_PRIVATE);
                     int myIntValue_active_projects = sp.getInt("active_projects", -1);
-                    ServiceHelper serviceHelper1 = new ServiceHelper(mprojectList.get(i).getProjectId(),mprojectList.get(i).getSensorList(),myIntValue_active_projects,context);
+                    ServiceHelper serviceHelper1 = new ServiceHelper(mprojectList.get(i).getProjectId(),mprojectList.get(i).getSensorList(),myIntValue_active_projects,context,duration);
                     serviceHelper1.startService(true);
 
                 } else {

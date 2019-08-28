@@ -271,7 +271,7 @@ public class SensorServiceThirdProject extends Service {
 
                 try {
                     File dir = new File(fullPath);
-                    sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".txt");
+                    sensorFile = new File(dir, Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf('.') + 1) + date + ".csv");
 
                     if (!dir.exists()) {
                         dir.mkdirs();

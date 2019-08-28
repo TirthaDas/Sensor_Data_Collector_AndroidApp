@@ -8,12 +8,14 @@ public class projectData {
     String Description;
     String id;
     ArrayList<String > sensorList;
-    public projectData(String id,String projectTitle, String Description, ArrayList<String> sensorList)
+    String duration;
+    public projectData(String id,String projectTitle, String Description, ArrayList<String> sensorList,String duration)
     {
         this.projectTitle = projectTitle;
         this.Description = Description;
         this.sensorList=sensorList;
         this.id = id;
+        this.duration=duration;
 
     }
     public String getProjectTitle()
@@ -29,5 +31,8 @@ public class projectData {
     }
     public String getId(){
         return id;
+    }
+    public String getDuration(){
+        return duration;
     }
 }

@@ -176,8 +176,11 @@ getVl(UserId);
 //                                int Status=responseObject.getInt(status)
                             Log.d(TAG, "onResponse: *********&&&&&&"+activeProjects.length());
                             if(mStatusCode==200){
+                                    if(activeProjects.length()==0){
+                                        Toast.makeText(getContext(),"No Active Projects Found",Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(getContext(),message,Toast.LENGTH_SHORT).show();
+                                    }
+//                                Toast.makeText(getContext(),message,Toast.LENGTH_SHORT).show();
                                 for(int a=0;a<activeProjects.length();a++){
                                     JSONObject singleActiveProject = activeProjects.getJSONObject(a);
                                     String id = singleActiveProject.getString("_id");
@@ -185,23 +188,28 @@ getVl(UserId);
                                     String projectDesciption = singleActiveProject.getString("content");
                                     String SensorList = singleActiveProject.getString("sensorList");
                                     String UserID = singleActiveProject.getString("userId");
-                                    String ProjectId = singleActiveProject.getString("projectId");
-                                    boolean hasQuestions=singleActiveProject.getBoolean("hasQuestions");
-                                    boolean isCurrentlyActive=singleActiveProject.getBoolean("isCurrentlyActive");
-                                    Log.d(TAG, "onResponse: ******************************id"+id);
-                                    Log.d(TAG, "onResponse: ******************************projectTitle"+projectTitle);
-                                    Log.d(TAG, "onResponse: ******************************projectDesciption"+projectDesciption);
-                                    Log.d(TAG, "onResponse: ******************************SensorList"+SensorList);
-                                    Log.d(TAG, "onResponse: ******************************UserID"+UserID);
-                                    Log.d(TAG, "onResponse: ******************************ProjectId"+ProjectId);
-                                    mprojectList.add(new Active_Project_Data(id, projectTitle, projectDesciption, SensorList,UserID,ProjectId,isCurrentlyActive,hasQuestions));
+                                    String project = singleActiveProject.getString("projectId");
+                                    try{
+                                        JSONObject project1 = new JSONObject(project);
+                                        String ProjectId= project1.getString("_id");
+                                        String duration=project1.getString("duration");
+                                        boolean hasQuestions=singleActiveProject.getBoolean("hasQuestions");
+                                        boolean isCurrentlyActive=singleActiveProject.getBoolean("isCurrentlyActive");
+                                        Log.d(TAG, "onResponse: ******************************id"+id);
+                                        Log.d(TAG, "onResponse: ******************************projectTitle"+projectTitle);
+                                        Log.d(TAG, "onResponse: ******************************projectDesciption"+projectDesciption);
+                                        Log.d(TAG, "onResponse: ******************************SensorList"+SensorList);
+                                        Log.d(TAG, "onResponse: ******************************UserID"+UserID);
+                                        Log.d(TAG, "onResponse: ******************************ProjectId"+ProjectId);
+                                        mprojectList.add(new Active_Project_Data(id, projectTitle, projectDesciption, SensorList,UserID,ProjectId,isCurrentlyActive,hasQuestions,duration));
 
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
 
                                 }
-
                                 mprojectsAdapter = new Active_Projects_Adapter(getActivity(), mprojectList);
                                 mrecyclerView.setAdapter(mprojectsAdapter);
-
                             }
 
                         } catch (JSONException e) {

@@ -1,5 +1,6 @@
 package com.das.tirtha.sensordatacollector;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ServiceHelper {
     // member variables
     private String ProjectId;
+    private String duration;
     private String SensorList;
     int myIntValue_active_projects;
     private Context context;
@@ -40,11 +42,12 @@ public class ServiceHelper {
         this.context=context;
     }
 
-    public ServiceHelper(String ProjectId, String SensorList, int myIntValue_active_projects,Context context) {
+    public ServiceHelper(String ProjectId, String SensorList, int myIntValue_active_projects,Context context,String duration) {
         this.ProjectId = ProjectId;
         this.SensorList = SensorList;
         this.myIntValue_active_projects=myIntValue_active_projects;
         this.context=context;
+        this.duration=duration;
     }
 
 
@@ -71,6 +74,8 @@ public class ServiceHelper {
             Intent serviceIntent = new Intent(context, SensorService.class);
             serviceIntent.putExtra("sensors", SensorList);
             serviceIntent.putExtra("projectId", ProjectId);
+            serviceIntent.putExtra("duration", duration);
+
             context.startService(serviceIntent);
 
         }
@@ -86,6 +91,9 @@ public class ServiceHelper {
             Intent serviceIntent2 = new Intent(context, SensorServiceSecondProject.class);
             serviceIntent2.putExtra("sensors", SensorList);
             serviceIntent2.putExtra("projectId", ProjectId);
+            serviceIntent2.putExtra("duration", duration);
+
+
             context.startService(serviceIntent2);
         }
 
@@ -99,6 +107,8 @@ public class ServiceHelper {
             Intent serviceIntent3 = new Intent(context, SensorServiceThirdProject.class);
             serviceIntent3.putExtra("sensors", SensorList);
             serviceIntent3.putExtra("projectId", ProjectId);
+            serviceIntent3.putExtra("duration", duration);
+
             context.startService(serviceIntent3);
         }
         else {
@@ -114,6 +124,7 @@ public class ServiceHelper {
 
 
     public void stopServices(String activeProjectId){
+        Log.d("***************+++++", "stopServices: "+activeProjectId+ProjectId);
         sp = context.getSharedPreferences("login", MODE_PRIVATE);
         String ProjectInService0=sp.getString("case0","");
         String ProjectInService1=sp.getString("case1","");
@@ -136,7 +147,6 @@ public class ServiceHelper {
             context.stopService(serviceIntent2);
             updateActiveProjectStatus(activeProjectId);
 
-
         }
         if (ProjectInService2.equals(ProjectId)){
             SharedPreferences.Editor editor2 = sp.edit();
@@ -146,10 +156,7 @@ public class ServiceHelper {
             context.stopService(serviceIntent3);
             updateActiveProjectStatus(activeProjectId);
 
-
         }
-
-
     }
 
     //  toast maker
@@ -201,6 +208,7 @@ public class ServiceHelper {
                 params.put("userId",userId);
                 params.put("projectId", ProjectId);
                 params.put("sensorList", SensorList);
+
                 return params;
             }
 
@@ -269,4 +277,11 @@ public void updateActiveProjectStatus(final String activeProjectId){
     requestQueue.add(request);
 }
 
+public BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String projectId=intent.getStringExtra("com.das.tirtha.projectId1");
+
+        }
+    };
 }
