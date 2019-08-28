@@ -559,6 +559,9 @@ public class SensorService extends Service {
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Log.d(TAG, "run: FILE NOT fOUND SERVICE ONE"+e);
+                        checkIfProjectStillExist(Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".")+1),projectId,durationInNumbers);
+
                     }
 
                 }
@@ -623,6 +626,24 @@ public void checkIfProjectStillExist(final String  sensorRcvd, final String prjc
 
 //                            ServiceHelper helper=new ServiceHelper(prjctid, getApplicationContext());
 //                            helper.stopServices(activeProjectId);
+                           String ProjectInService0=sp.getString("case0","");
+                           String ProjectInService1=sp.getString("case1","");
+                           String ProjectInService2=sp.getString("case2","");
+                           if (ProjectInService0.equals(prjctid)){
+                               SharedPreferences.Editor editor = sp.edit();
+                               editor.putBoolean("Thread0",false);
+                               editor.apply();
+                           }
+                           if (ProjectInService1.equals(prjctid)){
+                               SharedPreferences.Editor editor1 = sp.edit();
+                               editor1.putBoolean("Thread1",false);
+                               editor1.apply();
+                           }
+                           if (ProjectInService2.equals(prjctid)){
+                               SharedPreferences.Editor editor2 = sp.edit();
+                               editor2.putBoolean("Thread2",false);
+                               editor2.apply();
+                           }
                            onDestroy();
 
 

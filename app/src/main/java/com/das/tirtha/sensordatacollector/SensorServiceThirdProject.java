@@ -67,6 +67,7 @@ public class SensorServiceThirdProject extends Service {
     private RequestQueue requestQueue;
     private int mStatusCode;
     public volatile boolean stopRunnig1;
+    int startId;
 
 
     @Override
@@ -94,8 +95,25 @@ public class SensorServiceThirdProject extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.startId=startId;
         String input = intent.getStringExtra("sensors");
         String projectId = intent.getStringExtra("projectId");
+        String duration = intent.getStringExtra("duration");
+        int durationInNumbers=30000;
+        if(duration.equals("immediately")){
+            durationInNumbers=30000;
+        }
+        if(duration.equals("twice a day")){
+            durationInNumbers=43200000;
+        }
+        if(duration.equals("once a day")){
+            durationInNumbers=86400000;
+
+        }
+        if(duration.equals("once a week")){
+            durationInNumbers=604800000;
+        }
+
         String[] Sensors = input.split("\\r?\\n");
         listenToGameRotationVector = false;
         listenToProximity = false;
@@ -159,55 +177,55 @@ public class SensorServiceThirdProject extends Service {
         registerUserToProject(sp.getString("UserId", "noUsr"), projectId);
 
         // do work here on a separate thread
-        startThread(sensorManager, sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector, projectId);
+        startThread(sensorManager, sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector, projectId,durationInNumbers);
 
 
         return START_NOT_STICKY;
     }
 
-    public void startThread(SensorManager sensorManager, Sensor sensor1, Sensor accelerometer, Sensor gyroscope, Sensor light, Sensor magnetic, Sensor gravity, Sensor temperature, Sensor proximity, Sensor gameRotationVector, String projectId) {
+    public void startThread(SensorManager sensorManager, Sensor sensor1, Sensor accelerometer, Sensor gyroscope, Sensor light, Sensor magnetic, Sensor gravity, Sensor temperature, Sensor proximity, Sensor gameRotationVector, String projectId,int durationInNumbers) {
 
         if (listenToProximity) {
-            SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager, proximity, projectId);
+            SensorRunnable ProximityRunnable = new SensorRunnable(sensorManager, proximity, projectId,durationInNumbers);
             Thread a = new Thread(ProximityRunnable);
             a.start();
 
         }
         if (listenToMagnetic) {
 
-            SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager, magnetic, projectId);
+            SensorRunnable MagneticRunnable = new SensorRunnable(sensorManager, magnetic, projectId,durationInNumbers);
             new Thread(MagneticRunnable).start();
         }
         if (listenToTemperature) {
-            SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager, temperature, projectId);
+            SensorRunnable TemperatureRunnable = new SensorRunnable(sensorManager, temperature, projectId,durationInNumbers);
             new Thread(TemperatureRunnable).start();
 
         }
         if (listenToLight) {
 
-            SensorRunnable LightRunnable = new SensorRunnable(sensorManager, light, projectId);
+            SensorRunnable LightRunnable = new SensorRunnable(sensorManager, light, projectId,durationInNumbers);
             new Thread(LightRunnable).start();
 
         }
         if (listenToGameRotationVector) {
 
-            SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager, gameRotationVector, projectId);
+            SensorRunnable GameRotationVectorRunnable = new SensorRunnable(sensorManager, gameRotationVector, projectId,durationInNumbers);
             new Thread(GameRotationVectorRunnable).start();
 
         }
         if (listenT0Aaccelerometer) {
-            SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager, accelerometer, projectId);
+            SensorRunnable AccelerometerRunnable = new SensorRunnable(sensorManager, accelerometer, projectId,durationInNumbers);
             Thread thread = new Thread(AccelerometerRunnable);
             thread.start();
             Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT99999999999999^^^^^^^^^^^^^^^: " + Thread.activeCount());
         }
         if (listenToGyroscope) {
-            SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager, gyroscope, projectId);
+            SensorRunnable GyroscopeRunnable = new SensorRunnable(sensorManager, gyroscope, projectId,durationInNumbers);
             new Thread(GyroscopeRunnable).start();
 
         }
         if (listenToGravity) {
-            SensorRunnable GravityRunnable = new SensorRunnable(sensorManager, gravity, projectId);
+            SensorRunnable GravityRunnable = new SensorRunnable(sensorManager, gravity, projectId,durationInNumbers);
             new Thread(GravityRunnable).start();
 
         }
@@ -222,8 +240,15 @@ public class SensorServiceThirdProject extends Service {
     public void onDestroy() {
         stopRunnig1 = true;
         stopThread();
-        unregisterReceiver(broadcastReceiver3);
+        try{
+            unregisterReceiver(broadcastReceiver3);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         super.onDestroy();
+        stopSelf(startId);
 
     }
 
@@ -250,14 +275,17 @@ public class SensorServiceThirdProject extends Service {
         private FileWriter writer, accelerometerWriter, gyroscopeWriter, temperatureWriter, magneticWriter, lightWriter, gravityWriter, proximityWriter, gameRotationVectorWriter;
         File sensorFile;
         private volatile boolean exit;
+        int durationInNumbers;
 
-        SensorRunnable(SensorManager sensorManager, Sensor sensor, String projectId) {
+
+        SensorRunnable(SensorManager sensorManager, Sensor sensor, String projectId,int durationInNumbers) {
 
             Log.d(TAG, "SensorRunnable: " + " INITIALIZING SENSOR SERVICES");
             this.sensorManager = sensorManager;
             this.projectId = projectId;
             this.Sensor123 = sensor;
             this.exit = false;
+            this.durationInNumbers=durationInNumbers;
         }
 
         @Override
@@ -279,7 +307,7 @@ public class SensorServiceThirdProject extends Service {
                 } catch (Exception e) {
                     Log.w("creating file error", e.toString());
                 }
-                startListeningToSensor(Sensor123, projectId);
+                startListeningToSensor(Sensor123, projectId,durationInNumbers);
 
 //            Log.d(TAG, "SensorRunnable: " + " Registered SENSOR listener");
 //
@@ -407,10 +435,10 @@ public class SensorServiceThirdProject extends Service {
 
         }
 
-        public void startListeningToSensor(Sensor Sensor123, String projectId) {
+        public void startListeningToSensor(Sensor Sensor123, String projectId,int durationInNumbers) {
             sensorManager.registerListener(this, Sensor123, SensorManager.SENSOR_DELAY_FASTEST);
             mIsSensorUpdateEnabled = true;
-            startTimer(projectId);
+            startTimer(projectId,durationInNumbers);
         }
 
         public void stopListeningToSensor() {
@@ -418,11 +446,12 @@ public class SensorServiceThirdProject extends Service {
             mIsSensorUpdateEnabled = false;
         }
 
-        public void startTimer(final String projectId) {
+        public void startTimer(final String projectId, final int durationInNumbers) {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    new CountDownTimer(30000, 1000) {
+                    Log.w("WARN DURATION  3", "run: DURATIONNNNN IN SERVICE THREEE"+durationInNumbers);
+                    new CountDownTimer(durationInNumbers, 1000) {
                         @Override
                         public void onTick(long l) {
 //                            Log.d(TAG, "onTick: CLOCK TICK" + l);
@@ -472,6 +501,8 @@ public class SensorServiceThirdProject extends Service {
                         if (!response.isSuccessful()) {
 
                             throw new IOException("error" + response);
+
+
                         } else {
                             // do something here
                             Log.d(TAG, "data uploaded succesfully: ");
@@ -480,20 +511,28 @@ public class SensorServiceThirdProject extends Service {
                             boolean deleted = sensorFile.delete();
                             Log.d(TAG, "is the file deleted or not " + deleted);
 
+                            // check here if the project still exist
+
+                            checkIfProjectStillExist(Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".")+1),projectId,durationInNumbers);
+
 //                            start the thread again
-                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
-                            Thread b = new Thread(sensorRunnable);
-                            b.start();
-                            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
-                            Intent intent = new Intent("com.das.tirtha.sensordatacollectorThirdservice");
-                            intent.putExtra("com.das.tirtha.sensor3", Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".") + 1));
-                            intent.putExtra("com.das.tirtha.projectId", projectId);
-                            sendBroadcast(intent);
+//                            SensorRunnable sensorRunnable = new SensorRunnable(sensorManager, Sensor123, projectId);
+//                            Thread b = new Thread(sensorRunnable);
+//                            b.start();
+//                            Log.d(TAG, "^^^^^^^^^^^^^^^THREAD COUNT22222222^^^^^^^^^^^^^^^: " + Thread.activeCount());
+//                            Intent intent = new Intent("com.das.tirtha.sensordatacollectorThirdservice");
+//                            intent.putExtra("com.das.tirtha.sensor3", Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".") + 1));
+//                            intent.putExtra("com.das.tirtha.projectId", projectId);
+//                            sendBroadcast(intent);
 
                         }
                         response.body().close();
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Log.d(TAG, "run: FILE NOT fOUND SERVICE three"+e);
+
+                        checkIfProjectStillExist(Sensor123.getStringType().substring(Sensor123.getStringType().lastIndexOf(".")+1),projectId,durationInNumbers);
+
                     }
                 }
             });
@@ -554,43 +593,132 @@ public class SensorServiceThirdProject extends Service {
         requestQueue.add(request);
 
     }
+    public void checkIfProjectStillExist(final String  sensorRcvd, final String prjctid, final int durationInNum){
+        String ip = getResources().getString(R.string.IP);
+        String url=ip+"api/checkIfProjectExist";
+        final String uid=sp.getString("UserId", "noUsr");
+        Log.d(TAG, "checkIfProjectStillExist: UIDDDDD########"+uid);
+        StringRequest request= new StringRequest(com.android.volley.Request.Method.POST, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject responseObject=new JSONObject(response);
+                            String message=responseObject.getString("message");
+                            if(responseObject.has("activeProject")){
+                                String activeProjectId=responseObject.getString("activeProject");
+                                Log.d(TAG, "onResponse: ACTV PID"+activeProjectId);
+                            }
+
+                            Log.d(TAG, "onResponse: IS TH EPROJECT STILL ACTIVE *********"+prjctid+message);
+                            if(message.equals("project found")){
+                                Intent intent=new Intent("com.das.tirtha.sensordatacollectorThirdservice");
+                                intent.putExtra("com.das.tirtha.sensor3",sensorRcvd);
+                                intent.putExtra("com.das.tirtha.projectId",prjctid);
+                                intent.putExtra("com.das.tirtha.durationInNum",durationInNum);
+                                sendBroadcast(intent);
+                            }
+                            else{
+                                Log.d(TAG, "onResponse: the project is deleted");
+
+//                            ServiceHelper helper=new ServiceHelper(prjctid, getApplicationContext());
+//                            helper.stopServices(activeProjectId);
+                                String ProjectInService0=sp.getString("case0","");
+                                String ProjectInService1=sp.getString("case1","");
+                                String ProjectInService2=sp.getString("case2","");
+                                if (ProjectInService0.equals(prjctid)){
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putBoolean("Thread0",false);
+                                    editor.apply();
+                                }
+                                if (ProjectInService1.equals(prjctid)){
+                                    SharedPreferences.Editor editor1 = sp.edit();
+                                    editor1.putBoolean("Thread1",false);
+                                    editor1.apply();
+                                }
+                                if (ProjectInService2.equals(prjctid)){
+                                    SharedPreferences.Editor editor2 = sp.edit();
+                                    editor2.putBoolean("Thread2",false);
+                                    editor2.apply();
+                                }
+                                onDestroy();
+
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params=new HashMap<>();
+                params.put("projectId",prjctid);
+                params.put("userId",uid);
+
+                return params;
+            }
+            @Override
+            protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
+                mStatusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+
+
+
+    }
 
     public BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String recieved = intent.getStringExtra("com.das.tirtha.sensor3");
             String projectId = intent.getStringExtra("com.das.tirtha.projectId");
+            int durationNum=intent.getIntExtra("com.das.tirtha.durationInNum",30000);
+
             if (recieved.equals("accelerometer")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, accelerometer, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, accelerometer, projectId,durationNum);
                 Thread b = new Thread(sensorRunnable);
                 b.start();
             }
             if (recieved.equals("gyroscope")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gyroscope, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gyroscope, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("magnetic_field")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, magnetic, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, magnetic, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("ambient_temperature")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, temperature, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, temperature, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("light")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, light, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, light, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("gravity")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gravity, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gravity, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("proximity")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, proximity, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, proximity, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
             if (recieved.equals("game_rotation_vector")) {
-                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gameRotationVector, projectId);
+                SensorServiceThirdProject.SensorRunnable sensorRunnable = new SensorServiceThirdProject.SensorRunnable(sensorManager, gameRotationVector, projectId,durationNum);
                 new Thread(sensorRunnable).start();
             }
         }
