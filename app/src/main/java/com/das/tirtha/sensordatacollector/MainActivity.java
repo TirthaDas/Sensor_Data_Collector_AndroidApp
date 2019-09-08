@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // get all extras passed to main activity
-        String User=getAllExtras(savedInstanceState);
-
+//        String User=getAllExtras(savedInstanceState);
+        String User = sp.getString("UserName","");
         // set username in nav header
         View nav_view=navigationView.getHeaderView(0);
         nav_header_user= nav_view.findViewById(R.id.nav_header_user);

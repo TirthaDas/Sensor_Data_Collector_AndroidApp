@@ -10,66 +10,81 @@
         layout="@layout/toolbar" />
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/project_description_toolbar"
         >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/projectDetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="8dp"
-        android:padding="8dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="8dp">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="Project Description"
-            android:textColor="#000000"
-            android:textFontWeight="10"
-            android:textSize="25sp"
-
-            android:textStyle="normal" />
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/projectDetails"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--android:padding="8dp"-->
+                <!--app:cardCornerRadius="2dp"-->
+                <!--app:cardElevation="8dp">-->
 
 
-        <TextView
-            android:id="@+id/project_description_Textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="2dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:text="lesson learnt"
-            android:textAlignment="viewStart"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
 
-            android:textSize="22dp" />
+                    <TextView
+                        android:id="@+id/projectTitleInProjectDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:maxLines="2"
+                        android:textColor="#3aaf85"
 
-    </LinearLayout>
-    </android.support.v7.widget.CardView>
-    </LinearLayout>
+                        android:textFontWeight="800"
+
+                        android:textSize="22sp"
+
+                        android:textStyle="normal"
+                        android:textAlignment="center"
+
+                        />
+
+                    <View
+                        android:layout_width="300dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="24dp"
+
+                        android:layout_marginBottom="4dp"
+
+                        android:background="@color/delicateBlue" />
+
+                    <TextView
+                        android:id="@+id/project_description_Textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+
+                        android:textSize="22dp" />
+
+                </LinearLayout>
+            <!--</android.support.v7.widget.CardView>-->
+        </LinearLayout>
     </ScrollView>
     <LinearLayout
         android:id="@+id/footer"

@@ -2,27 +2,30 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="260dp"
+    android:layout_height="270dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    android:paddingTop="8dp"
+    android:paddingTop="1dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    app:cardCornerRadius="2dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="8dp"
     android:id="@+id/activeProjectCard"
     android:foreground="?attr/selectableItemBackground"
+
     >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="210dp"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="0dp"
+
+        android:background="#AAD3E3"
 
         >
 
@@ -31,23 +34,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-
+            android:textColor="#000000"
             android:text="Switch:   "
             android:textOff="OFF   "
             android:textOn="ON   "
 
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Project Title"
-            android:layout_gravity="center_horizontal"
-            android:textSize="25sp"
-            android:textStyle="normal"
-            android:textColor="#000000"
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Project Title"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:textSize="25sp"-->
+            <!--android:textStyle="normal"-->
+            <!--android:textColor="#000000"-->
 
-            />
+            <!--/>-->
 
 
         <TextView
@@ -63,12 +66,13 @@
             android:textSize="22dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="#000000"
             />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="2dp"
-            android:background="@color/delicateBlue"
+            android:background="#4B7B8D"
 
             android:layout_gravity="center_horizontal"/>
 
@@ -98,21 +102,39 @@
             android:textSize="22dp"
             android:textAlignment="viewStart"
             android:ellipsize="end"
-            android:maxLines="4"/>
+            android:maxLines="3"
+            android:textColor="#000000"/>
 
 
     </LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:layout_gravity="bottom">
+    android:layout_gravity="bottom"
+    >
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="answer questions"
         android:layout_gravity="bottom"
         android:id="@+id/activeProjectAnswerQuestions"
+        android:background="#55acee"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="800"
+
+        android:textSize="18sp"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:text="No Questions Asked"
+        android:textFontWeight="700"
+        android:id="@+id/noQuestionsAsked"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:visibility="gone"/>
+
 
 </LinearLayout>
 

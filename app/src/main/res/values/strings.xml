@@ -9,7 +9,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="IP">http://192.168.0.12:3000/</string>
-    <!--<string name="IP">http://10.164.12.124:3000/ </string>-->
+    <!--<string name="IP">http://10.156.79.113:3000/ </string>-->
 
 
 </resources>

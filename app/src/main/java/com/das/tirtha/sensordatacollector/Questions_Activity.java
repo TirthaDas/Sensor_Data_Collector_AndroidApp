@@ -2,6 +2,7 @@ package com.das.tirtha.sensordatacollector;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -66,9 +67,10 @@ public class Questions_Activity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mQuestionsList = new ArrayList<>();
         mrecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mrecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+//        mrecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         mQuestionsAdapter = new Questions_Adapter(this, mQuestionsList);
         mrecyclerView.setAdapter(mQuestionsAdapter);
+
 //        ArrayList<String> sensorList = getSensorList();
         //get extras
         ProjectId = extras.getString("ProjectId");

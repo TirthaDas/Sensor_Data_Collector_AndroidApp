@@ -69,15 +69,19 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         if(hasQuestions){
             Log.d("*********", "onBindViewHolder: "+"it has questions");
             activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.VISIBLE);
+            activeProjectsviewHolder.noQuestionsAsked.setVisibility(View.GONE);
+
         }else {
             activeProjectsviewHolder.HasMoreQuestions.setVisibility(View.GONE);
             Log.d("*********", "onBindViewHolder: "+"it has NO questions");
+            activeProjectsviewHolder.noQuestionsAsked.setVisibility(View.VISIBLE);
+
 
         }
         activeProjectsviewHolder.HasMoreQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Item "  +i+ " is clicked.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Item "  +i+ " is clicked.", Toast.LENGTH_SHORT).show();
                 Intent intent= new Intent(context,Questions_Activity.class);
                 intent.putExtra("ProjectId",ProjectId);
                 context.startActivity(intent);
@@ -89,7 +93,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(context, "Item "  +i+ " is ON.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, " Project Started.", Toast.LENGTH_SHORT).show();
 
                     sp = context.getSharedPreferences("login", MODE_PRIVATE);
                     int myIntValue_active_projects = sp.getInt("active_projects", -1);
@@ -97,7 +101,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
                     serviceHelper1.startService(true);
 
                 } else {
-//                    Toast.makeText(context, "Item "  +i+ " is OFF.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Project stopped.", Toast.LENGTH_SHORT).show();
                     ServiceHelper serviceHelper2=new ServiceHelper(mprojectList.get(i).getProjectId(),context);
                     serviceHelper2.stopServices(mprojectList.get(i).getId());
 
@@ -111,7 +115,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
         return mprojectList.size();
     }
     public class activeProjectsViewHolder extends RecyclerView.ViewHolder{
-        public TextView projectTitle,projectDescriptoion;
+        public TextView projectTitle,projectDescriptoion,noQuestionsAsked;
         public Button HasMoreQuestions;
         public Switch aSwitch;
         public activeProjectsViewHolder(@NonNull View itemView) {
@@ -120,6 +124,7 @@ public class Active_Projects_Adapter extends RecyclerView.Adapter<Active_Project
             projectDescriptoion=itemView.findViewById(R.id.activeProject_item_description);
             HasMoreQuestions=itemView.findViewById(R.id.activeProjectAnswerQuestions);
             aSwitch=itemView.findViewById(R.id.activeProjectSwitch);
+            noQuestionsAsked=itemView.findViewById(R.id.noQuestionsAsked);
         }
     }
 }

@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class Project_Description extends AppCompatActivity {
-    private TextView projectDescription,mTitle;
+    private TextView projectDescription,mTitle,projectTitleInProjectDescription;
     private String[] data = new String[2];
     private Toolbar toolbar;
     private Button selectSensors;
@@ -33,6 +33,7 @@ public class Project_Description extends AppCompatActivity {
         projectDescription=findViewById(R.id.project_description_Textview);
         toolbar=findViewById(R.id.project_description_toolbar);
         mTitle =  toolbar.findViewById(R.id.toolbar_title);
+        projectTitleInProjectDescription=findViewById(R.id.projectTitleInProjectDescription);
         selectSensors=findViewById(R.id.got_to_sensors);
 
         // set up toolbar
@@ -50,6 +51,7 @@ public class Project_Description extends AppCompatActivity {
         //get extras
         projectId=extras.getString("projectId");
         projectTitle = extras.getString("Project_title");
+        projectTitleInProjectDescription.setText(projectTitle);
         duration=extras.getString("duration");
         projectDescriptionContent = extras.getString("Project_Description");
         sensorList=extras.getStringArrayList("sensorList");

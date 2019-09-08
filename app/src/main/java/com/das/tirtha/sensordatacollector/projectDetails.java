@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
@@ -72,6 +73,13 @@ public class projectDetails extends AppCompatActivity {
         // bind the components
 //        project_detail_title = findViewById(R.id.project_detail_title);
         recyclerView = findViewById(R.id.sensor_list_recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL) {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                // Do not draw the divider
+            }
+        });
+//        recyclerView.addItemDecoration(new DividerItemDecoration(this, 0));
         toolbar = findViewById(R.id.project_detail_toolbar);
         mTitle = toolbar.findViewById(R.id.toolbar_title);
         startProject = findViewById(R.id.start_project);
@@ -86,7 +94,7 @@ public class projectDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         sensorsListAdapter = new SensorsListAdapter(this, SensorList);
         recyclerView.setAdapter(sensorsListAdapter);
         ArrayList<String> sensorList = getSensorList();

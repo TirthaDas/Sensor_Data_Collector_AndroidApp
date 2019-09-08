@@ -28,8 +28,9 @@
                 android:id="@+id/sensor_list_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="55dp"
                 android:layout_marginBottom="70dp"
+                android:background="#EEECEC"
                 >
 
             </android.support.v7.widget.RecyclerView>
