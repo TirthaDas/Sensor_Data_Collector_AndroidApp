@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class available_projects extends Fragment {
+public class available_projects extends Fragment{
     private  RecyclerView mrecyclerView;
     private projectsAdapter mprojectsAdapter;
     private ArrayList<projectData> mprojectList;
@@ -55,9 +56,18 @@ public class available_projects extends Fragment {
 //        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         sp =  (getActivity()).getSharedPreferences("login", MODE_PRIVATE);
 
+        final SwipeRefreshLayout swipeLayout = view.findViewById(R.id.swiperefresh);
 
         getProjectsList();
 
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getProjectsList();
+                swipeLayout.setRefreshing(false);
+
+            }
+        });
         return view;
 //        return inflater.inflate(R.layout.fragment_available_projects,container,false);
     }
@@ -122,6 +132,7 @@ public class available_projects extends Fragment {
                             editor.putInt("active_projects",actiiveProjectCount).apply();
                             mprojectsAdapter=new projectsAdapter(getActivity(),mprojectList);
                             mrecyclerView.setAdapter(mprojectsAdapter);
+
                         } catch (JSONException e) {
                             Log.d(TAG, "onResponse: 3");
 
@@ -152,5 +163,6 @@ public class available_projects extends Fragment {
         });
         requestQueue.add(request);
     }
+
 
 }

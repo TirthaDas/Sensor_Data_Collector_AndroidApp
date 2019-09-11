@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Sensor Data Collector</string>
-    <string name="fullname_err">Enter your name</string>
+    <string name="fullname_err">Enter your name (only letters)</string>
     <string name="email_err">Enter correct email</string>
-    <string name="username_err">Enter Username</string>
+    <string name="username_err">Enter Username (only letters)</string>
     <string name="password_err">Must have at least one lowercase letter, one uppercase letter, one digit and one special character </string>
     <string name="confirmpassword_err">Password do not match</string>
     <string name="gender_err">Select gender</string>
