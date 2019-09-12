@@ -361,9 +361,10 @@ public class projectDetails extends AppCompatActivity {
                         try {
                             JSONObject responseObject = new JSONObject(response);
                             String message = responseObject.getString("message");
+                            Log.d("LLLLMESG666666", ""+message);
                             if (mStatusCode == 200) {
                                 String ActiveProjectID = responseObject.getString("_id");
-                                Toast.makeText(projectDetails.this, message+ActiveProjectID, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();
 
                             } else if (mStatusCode == 201) {
                                 Toast.makeText(projectDetails.this, message, Toast.LENGTH_SHORT).show();

@@ -37,10 +37,10 @@ import java.util.Map;
 
 public class login extends AppCompatActivity {
     private Toolbar toolbar;
-    private TextView mTitle,createNewAccount;
+    private TextView mTitle;
     private EditText loginEmail,loginPassword;
     private ProgressBar loginProgressBar;
-    private Button login;
+    private Button login,createNewAccount;
     private SharedPreferences sp;
     private AwesomeValidation awesomeValidation;
     private int mStatusCode;
@@ -78,7 +78,12 @@ public class login extends AppCompatActivity {
         login=findViewById(R.id.login);
         awesomeValidation=new AwesomeValidation(ValidationStyle.BASIC);
 
-
+        createNewAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToSignUp();
+            }
+        });
 
 
         // set up toolbar

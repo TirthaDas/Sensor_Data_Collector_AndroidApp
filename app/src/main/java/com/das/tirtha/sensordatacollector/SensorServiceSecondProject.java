@@ -12,6 +12,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
@@ -59,6 +61,7 @@ import static com.das.tirtha.sensordatacollector.NotificaltionChannel.ChannelId;
 public class SensorServiceSecondProject extends Service {
     private SensorManager sensorManager;
     private Handler mainHandler = new Handler();
+    private CountDownTimer countDownTimer;
     Sensor sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector;
     public static final String TAG = "Background Service";
     public static final String Userid = "";
@@ -472,7 +475,7 @@ public class SensorServiceSecondProject extends Service {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    new CountDownTimer(durationInNumbers, 1000) {
+                    countDownTimer=new CountDownTimer(durationInNumbers, 1000) {
                         @Override
                         public void onTick(long l) {
 //                            Log.d(TAG, "onTick: CLOCK TICK" + l);
@@ -481,12 +484,17 @@ public class SensorServiceSecondProject extends Service {
 
                         @Override
                         public void onFinish() {
-                            String file = sensorFile.getAbsolutePath();
-                            Log.d(TAG, "onFinish: TIMER OVER");
-                            stopListeningToSensor();
-                            uploadDataToServer(sensorFile,Sensor123,projectId);
-                            Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<"+Thread.activeCount());
-
+                            boolean state=checkNetworkStatus();
+                            if(state) {
+                                String file = sensorFile.getAbsolutePath();
+                                Log.d(TAG, "onFinish: TIMER OVER");
+                                stopListeningToSensor();
+                                uploadDataToServer(sensorFile, Sensor123, projectId);
+                                Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<" + Thread.activeCount());
+                            }
+                            else {
+                                countDownTimer.start();
+                            }
                         }
                     }.start();
 
@@ -741,4 +749,18 @@ public class SensorServiceSecondProject extends Service {
             }
         }
     };
+    public boolean checkNetworkStatus(){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+        }
+
+        return connected;
+    }
 }

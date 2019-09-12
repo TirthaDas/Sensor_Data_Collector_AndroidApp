@@ -13,6 +13,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -70,6 +72,7 @@ import static com.das.tirtha.sensordatacollector.NotificaltionChannel.ChannelId;
 public class SensorService extends Service {
     private SensorManager sensorManager;
     private Handler mainHandler = new Handler();
+    private CountDownTimer countDownTimer;
     Sensor sensor1, accelerometer, gyroscope, light, magnetic, gravity, temperature, proximity, gameRotationVector;
     public static final String TAG = "Background Service";
     public static final String Userid = "";
@@ -83,7 +86,6 @@ public class SensorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         // define the sensor manager and all the required sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor1 = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -181,7 +183,7 @@ public class SensorService extends Service {
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, ChannelId)
                 .setContentTitle("Sensor Data Collector is ON")
-                .setContentText("This app is collecting sensor data in the background for the first project")
+                .setContentText("This app is collecting  for the 1st project")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentIntent(pendingIntent)
                 .build();
@@ -480,24 +482,31 @@ public class SensorService extends Service {
         }
 
         public synchronized void startTimer(final String projectId, final int durationInNumbers) {
+
             Log.d(TAG, "/////////////////////////////0000000********************");
+
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    new CountDownTimer(durationInNumbers, 1000) {
+                     countDownTimer=new CountDownTimer(durationInNumbers, 1000) {
                         @Override
                         public void onTick(long l) {
 //                            Log.d(TAG, "onTick: CLOCK TICK" + l);
                         }
                         @Override
                         public void onFinish() {
-                            String file = sensorFile.getAbsolutePath();
-                            Log.d(TAG, "onFinish: TIMER OVER");
-                            stopListeningToSensor();
-                            uploadDataToServer(sensorFile, Sensor123, projectId);
-                            Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<" + Thread.activeCount() + stopRunnig1);
-
-                        }
+                                boolean state=checkNetworkStatus();
+                                if(state) {
+                                    String file = sensorFile.getAbsolutePath();
+                                    Log.d(TAG, "onFinish: TIMER OVER");
+                                    stopListeningToSensor();
+                                    uploadDataToServer(sensorFile, Sensor123, projectId);
+                                    Log.d(TAG, "onFinish:after upload  ^^^^^^^^^>>>>>>>>>>>>>>><<<<<<<<<<" + Thread.activeCount() + stopRunnig1);
+                                }
+                                else {
+                                    countDownTimer.start();
+                                }
+                            }
                     }.start();
                 }
             });
@@ -768,5 +777,20 @@ public void checkIfProjectStillExist(final String  sensorRcvd, final String prjc
             }
         }
     };
+
+public boolean checkNetworkStatus(){
+    boolean connected = false;
+    ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+            connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+        //we are connected to a network
+        connected = true;
+    }
+    else {
+        connected = false;
+    }
+
+    return connected;
+}
 
 }

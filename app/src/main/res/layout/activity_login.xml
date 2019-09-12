@@ -101,16 +101,26 @@
             android:id="@+id/login"
             />
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Don't have an account? Create One !!"
-            android:gravity="center_horizontal"
-            android:textSize="21sp"
-            android:onClick="goToSignUp"
-            android:id="@+id/goToSignUp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textSize="18sp"
+        android:text="Don't have an account? \nCreate One !!"
+        android:layout_marginTop="26dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybutton"
+        android:id="@+id/goToSignUp"
+        />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:text="Don't have an account? Create One !!"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:textSize="21sp"-->
+            <!--android:onClick="goToSignUp"-->
+            <!--android:id="@+id/goToSignUp"-->
+            <!--/>-->
 
     </LinearLayout>
 
