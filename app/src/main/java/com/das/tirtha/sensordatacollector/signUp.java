@@ -1,6 +1,7 @@
 package com.das.tirtha.sensordatacollector;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,8 @@ public class signUp extends AppCompatActivity {
     private Button register;
     private ProgressBar progressBar;
     private int mStatusCode;
+    private SharedPreferences sp;
+
 
     private AwesomeValidation awesomeValidation;
     final String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
@@ -65,6 +68,7 @@ public class signUp extends AppCompatActivity {
         progressBar=findViewById(R.id.progressBar);
 
         awesomeValidation=new AwesomeValidation(ValidationStyle.BASIC);
+        sp = getSharedPreferences("login",MODE_PRIVATE);
 
 
         /*
@@ -155,8 +159,14 @@ public class signUp extends AppCompatActivity {
                                     JSONObject responseObject=new JSONObject(response);
                                     String message=responseObject.getString("message");
                                     if(mStatusCode==200){
-                                        String UserID=responseObject.getString("UserID");
+//                                        String UserID=responseObject.getString("UserID");
                                         Toast.makeText(signUp.this,message,Toast.LENGTH_SHORT).show();
+                                        String UserID=responseObject.getString("UserID");
+                                        String UserName=responseObject.getString("UserName");
+                                        Toast.makeText(signUp.this,message,Toast.LENGTH_SHORT).show();
+                                        sp.edit().putBoolean("logged",true).apply();
+                                        sp.edit().putString("UserName",UserName).apply();
+                                        sp.edit().putString("UserId",UserID).apply();
                                         gotToMainActivity(username);
                                     }
                                     else if(mStatusCode==201){

@@ -171,7 +171,7 @@ public class SensorServiceThirdProject extends Service {
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, Channel3Id)
                 .setContentTitle("Sensor Data Collector is ON")
-                .setContentText("This app is collecting 3rd project")
+                .setContentText("This app is collecting sensor data for 3rd project")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentIntent(pendingIntent)
                 .build();

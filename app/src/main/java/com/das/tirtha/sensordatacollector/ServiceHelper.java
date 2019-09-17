@@ -182,7 +182,7 @@ public class ServiceHelper {
                                 Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
 
                             } else if (mStatusCode == 201) {
-                                Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context, "project started successfully !!", Toast.LENGTH_SHORT).show();
 
                             } else if (mStatusCode == 400||mStatusCode==401) {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -238,10 +238,10 @@ public void updateActiveProjectStatus(final String activeProjectId){
                         String message = responseObject.getString("message");
                         Log.d("op9999999 Mesg", "MESSAGE: "+message);
                         if (mStatusCode1 == 200) {
-                            Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
 
                         } else if (mStatusCode1 == 201) {
-                            Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "project started successfully", Toast.LENGTH_SHORT).show();
 
                         } else if (mStatusCode1 == 400||mStatusCode1==401) {
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
